@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">3DPrinter</string>
+    <string name="_3d_print">3D Print</string>
+    <string name="todo">TODO</string>
+    <string name="pagina_principal">Pagina Principal</string>
+    <string name="users">Usuarios</string>
+    <string name="printers">Impresoras</string>
+    <string name="lista_de_usuarios">Lista de Usuarios</string>
+    <string name="registro_de_usuarios">Registro de Usuarios</string>
+    <string name="nombre">Nombre</string>
+    <string name="telefono">Telefono</string>
+    <string name="usuario">Usuario</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="confirmacion">Confirmacion</string>
+    <string name="rol">Rol:</string>
+    <string name="nuevo_usuario">Nuevo Usuario</string>
 </resources>
