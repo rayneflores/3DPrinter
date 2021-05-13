@@ -11,12 +11,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements Serializable {
-    private Integer uId;
-    private String uName;
-    private String uUserName;
-    private String uPassword;
-    private String uEmail;
-    private String uPhone;
-    private Integer uRole;
+public class Printer implements Serializable {
+    private Integer pId;
+    private String pName;
+    private String pBrand;
+    private String pModel;
+    private String pImage;
 }

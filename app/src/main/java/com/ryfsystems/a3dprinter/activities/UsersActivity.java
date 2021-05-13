@@ -72,13 +72,13 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
 
         while (cursor.moveToNext()) {
             user = new User();
-            user.setId(cursor.getInt(0));
-            user.setName(cursor.getString(1));
-            user.setUserName(cursor.getString(2));
-            user.setPassword(cursor.getString(3));
-            user.setEmail(cursor.getString(4));
-            user.setPhone(cursor.getString(5));
-            user.setRole(cursor.getInt(6));
+            user.setUId(cursor.getInt(0));
+            user.setUName(cursor.getString(1));
+            user.setUUserName(cursor.getString(2));
+            user.setUPassword(cursor.getString(3));
+            user.setUEmail(cursor.getString(4));
+            user.setUPhone(cursor.getString(5));
+            user.setURole(cursor.getInt(6));
 
             usersList.add(user);
         }
@@ -89,7 +89,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
         listUsers = new ArrayList<>();
 
         for (int i = 0; i < usersList.size(); i++) {
-            listUsers.add(usersList.get(i).getId() + ".- " + usersList.get(i).getName());
+            listUsers.add(usersList.get(i).getUId() + ".- " + usersList.get(i).getUName());
         }
     }
 

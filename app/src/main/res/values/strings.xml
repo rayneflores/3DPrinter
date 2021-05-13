@@ -7,7 +7,7 @@
     <string name="printers">Impresoras</string>
     <string name="lista_de_usuarios">Lista de Usuarios</string>
     <string name="registro_de_usuarios">Registro de Usuarios</string>
-    <string name="nombre">Nombre</string>
+    <string name="userName">Nombre</string>
     <string name="telefono">Telefono</string>
     <string name="usuario">Usuario</string>
     <string name="password">Password</string>
@@ -15,4 +15,17 @@
     <string name="confirmacion">Confirmacion</string>
     <string name="rol">Rol:</string>
     <string name="nuevo_usuario">Nuevo Usuario</string>
+    <string name="login">Login</string>
+    <string name="logged_as">Usuario:</string>
+    <string name="lista_de_impresoras">Lista de Impresoras</string>
+    <string name="nueva_impresora">Nueva Impresora</string>
+    <string name="printer_name">Printer Name</string>
+    <string name="printer_brand">Printer Brand</string>
+    <string name="printer_model">Printer Model</string>
+    <string name="registrar_impresora">Registrar Impresora</string>
+    <string name="registrar_usuario">Registrar Usuario</string>
+    <string name="registro_de_impresoras">Registro de Impresoras</string>
+    <string name="printerBrand">Marca</string>
+    <string name="printerModel">Modelo</string>
+    <string name="printerUrlPhoto">Url de la Imagen</string>
 </resources>

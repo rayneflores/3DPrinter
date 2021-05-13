@@ -3,35 +3,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.UsersActivity">
+    tools:context=".activities.PrintersActivity">
 
     <TextView
-        android:id="@+id/tvUserListTitle"
+        android:id="@+id/tvPrintersListTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="@string/lista_de_usuarios"
+        android:text="@string/lista_de_impresoras"
         android:textAlignment="center"
         android:textColor="@color/iconsColor"
         android:textSize="18sp"
         android:textStyle="bold|italic" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="600dp"
-        android:layout_below="@+id/tvUserListTitle"
+        android:layout_below="@+id/tvPrintersListTitle"
         android:orientation="horizontal">
 
-        <ListView
-            android:id="@+id/lvUsers"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPrinters"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="16dp" />
+
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnAddUser"
+        android:id="@+id/btnAddPrinter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -39,9 +40,10 @@
         android:layout_marginBottom="19dp"
         android:backgroundTint="@color/colorGris"
         android:drawableLeft="@drawable/user"
-        android:text="@string/nuevo_usuario"
+        android:text="@string/nueva_impresora"
         android:textAllCaps="false"
         android:textColor="@color/iconsColor"
         android:textSize="16sp" />
+
 
 </RelativeLayout>

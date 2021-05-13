@@ -4,22 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.UserManagementActivity">
+    tools:context=".activities.PrinterManagementActivity">
 
     <TextView
-        android:id="@+id/lblUserManagementTitle"
+        android:id="@+id/lblPrinterManteinanceTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="16dp"
-        android:text="@string/registro_de_usuarios"
+        android:text="@string/registro_de_impresoras"
         android:textAlignment="center"
         android:textColor="@color/iconsColor"
         android:textSize="18sp"
         android:textStyle="bold|italic" />
 
     <LinearLayout
-        android:id="@+id/llUserDataContainer"
+        android:id="@+id/llPrinterDataContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -28,7 +28,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/txtUserName"
+            android:id="@+id/txtPrinterName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -37,71 +37,39 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/txtUserUsername"
+            android:id="@+id/txtPrinterBrand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/usuario"
+            android:hint="@string/printerBrand"
             android:inputType="text"
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/txtUserPassword"
+            android:id="@+id/txtPrinterModel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/password"
-            android:inputType="textPassword"
+            android:hint="@string/printerModel"
+            android:inputType="text"
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/txtUserPasswordConfirm"
+            android:id="@+id/txtPrinterUrlPhoto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:hint="@string/confirmacion"
-            android:inputType="textPassword"
+            android:hint="@string/printerUrlPhoto"
+            android:inputType="textUri"
             android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/txtUserEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/txtUserPhone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="@string/telefono"
-            android:inputType="phone"
-            android:textSize="16sp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/rol"
-            android:textSize="16sp" />
-
-        <Spinner
-            android:id="@+id/spRoles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
 
         <Button
-            android:id="@+id/btnUserRegister"
+            android:id="@+id/btnPrinterRegister"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:onClick="onClick"
-            android:text="@string/registrar_usuario" />
-
+            android:text="@string/registrar_impresora" />
 
     </LinearLayout>
 

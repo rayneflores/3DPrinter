@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ryfsystems.a3dprinter">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.3DPrinter">
-        <activity android:name=".activities.UserManagementActivity"></activity>
+        <activity android:name=".activities.PrinterManagementActivity"></activity>
+        <activity android:name=".activities.PrintersActivity" />
+        <activity android:name=".activities.LoginActivity" />
+        <activity android:name=".activities.UserManagementActivity" />
         <activity android:name=".activities.UsersActivity" />
         <activity android:name=".activities.SplashActivity">
             <intent-filter>

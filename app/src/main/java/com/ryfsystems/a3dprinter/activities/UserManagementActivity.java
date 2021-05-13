@@ -29,7 +29,7 @@ import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_PASSWORD;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_PHONE;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_ROLE;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_ROLES;
+import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_ROLE;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_USER;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
 import static com.ryfsystems.a3dprinter.utilities.Utilities.dbVersion;
@@ -55,7 +55,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_management);
-        
+
         txtUserName = findViewById(R.id.txtUserName);
         txtUserUsername = findViewById(R.id.txtUserUsername);
         txtUserPassword = findViewById(R.id.txtUserPassword);
@@ -63,8 +63,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         txtUserEmail = findViewById(R.id.txtUserEmail);
         txtUserPhone = findViewById(R.id.txtUserPhone);
         spRoles = findViewById(R.id.spRoles);
-        lblTitle = findViewById(R.id.lblTitle);
-        btnRegistrar = findViewById(R.id.btnRegistrar);
+        lblTitle = findViewById(R.id.lblUserManagementTitle);
+        btnRegistrar = findViewById(R.id.btnUserRegister);
 
         conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, dbVersion);
 
@@ -101,25 +101,25 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
             user = (User) received.getSerializable("user");
 
-            userId = user.getId();
-            txtUserName.setText(user.getName());
-            txtUserUsername.setText(user.getUserName());
-            txtUserPassword.setText(user.getPassword());
-            txtUserPasswordConfirm.setText(user.getPassword());
-            txtUserEmail.setText(user.getEmail());
-            txtUserPhone.setText(user.getPhone());
-            spRoles.setSelection(user.getRole());
+            userId = user.getUId();
+            txtUserName.setText(user.getUName());
+            txtUserUsername.setText(user.getUUserName());
+            txtUserPassword.setText(user.getUPassword());
+            txtUserPasswordConfirm.setText(user.getUPassword());
+            txtUserEmail.setText(user.getUEmail());
+            txtUserPhone.setText(user.getUPhone());
+            spRoles.setSelection(user.getURole());
         }
         /**/
     }
 
     private void queryRolesList() {
         SQLiteDatabase db = conn.getReadableDatabase();
-        
+
         Roles role;
         rolesList = new ArrayList<>();
 
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ROLES, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ROLE, null);
 
         while (cursor.moveToNext()) {
             role = new Roles();
@@ -159,7 +159,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                 Toast.makeText(getApplicationContext(), "Los Passwords no Coinciden... Reintente", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getApplicationContext(), "Campos Invalidos", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Debe llenar todos los Campos", Toast.LENGTH_SHORT).show();
         }
     }
 

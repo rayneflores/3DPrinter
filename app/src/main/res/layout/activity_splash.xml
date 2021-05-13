@@ -10,11 +10,11 @@
         android:layout_width="259dp"
         android:layout_height="355dp"
         android:layout_margin="8dp"
+        android:contentDescription="@string/_3d_print"
         android:src="@drawable/logo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:contentDescription="@string/_3d_print"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
