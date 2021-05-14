@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,7 +19,7 @@ import java.util.List;
 
 import lombok.NonNull;
 
-public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterViewHolder> {
+public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterViewHolder> implements AdapterView.OnItemClickListener {
 
     List<Printer> printerList;
     Context context;
@@ -51,6 +53,16 @@ public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterV
     @Override
     public int getItemCount() {
         return printerList.size();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Object element = parent.getItemAtPosition(position);
+
+
+        Toast.makeText(this.context, element.toString(), Toast.LENGTH_SHORT).show();
+        /*Printer selected = new Printer();
+        selected.setPId();*/
     }
 
 
