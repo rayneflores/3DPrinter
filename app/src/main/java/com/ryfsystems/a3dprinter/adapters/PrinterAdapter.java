@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +18,7 @@ import java.util.List;
 
 import lombok.NonNull;
 
-public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterViewHolder> implements AdapterView.OnItemClickListener {
+public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterViewHolder> {
 
     List<Printer> printerList;
     Context context;
@@ -48,23 +47,14 @@ public class PrinterAdapter extends RecyclerView.Adapter<PrinterAdapter.PrinterV
                 .centerInside()
                 .error(R.drawable.ic_launcher_foreground)
                 .into(holder.ivPrinterImage);
+
+        holder.itemView.setOnClickListener(v -> Toast.makeText(context, printerList.get(position).getPName(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
     public int getItemCount() {
         return printerList.size();
     }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Object element = parent.getItemAtPosition(position);
-
-
-        Toast.makeText(this.context, element.toString(), Toast.LENGTH_SHORT).show();
-        /*Printer selected = new Printer();
-        selected.setPId();*/
-    }
-
 
     public static class PrinterViewHolder extends RecyclerView.ViewHolder {
         ImageView ivPrinterImage;
