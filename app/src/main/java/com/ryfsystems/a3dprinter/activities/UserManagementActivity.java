@@ -19,6 +19,7 @@ import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
 import com.ryfsystems.a3dprinter.entities.Roles;
 import com.ryfsystems.a3dprinter.entities.User;
+import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,9 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
     Integer rolId = null;
     Integer userId = null;
+
+    String encryptedPassword;
+    String decryptedPassword;
 
     ArrayList<String> listRoles;
     ArrayList<Roles> rolesList;
@@ -101,11 +105,18 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
             user = (User) received.getSerializable("user");
 
+            try {
+                decryptedPassword = PasswordUtils.decrypt(user.getUPassword(), PasswordUtils.SALT);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
             userId = user.getUId();
             txtUserName.setText(user.getUName());
             txtUserUsername.setText(user.getUUserName());
-            txtUserPassword.setText(user.getUPassword());
-            txtUserPasswordConfirm.setText(user.getUPassword());
+            txtUserPassword.setText(decryptedPassword.trim());
+            txtUserPasswordConfirm.setText(decryptedPassword.trim());
             txtUserEmail.setText(user.getUEmail());
             txtUserPhone.setText(user.getUPhone());
             spRoles.setSelection(user.getURole());
@@ -147,11 +158,34 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
             if (validaPass()) {
                 if (rolId != null) {
                     if (received != null) {
-                        updateUser();
+                        try {
+                            encryptedPassword = PasswordUtils.encrypt(txtUserPassword.getText().toString(), PasswordUtils.SALT);
+                            updateUser(
+                                    txtUserName.getText().toString(),
+                                    txtUserUsername.getText().toString(),
+                                    encryptedPassword.trim(),
+                                    txtUserEmail.getText().toString(),
+                                    txtUserPhone.getText().toString(),
+                                    rolId
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
-                        saveUser();
+                        try {
+                            encryptedPassword = PasswordUtils.encrypt(txtUserPassword.getText().toString(), PasswordUtils.SALT);
+                            saveUser(
+                                    txtUserName.getText().toString(),
+                                    txtUserUsername.getText().toString(),
+                                    encryptedPassword.trim(),
+                                    txtUserEmail.getText().toString(),
+                                    txtUserPhone.getText().toString(),
+                                    rolId
+                            );
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                    //saveUser();
                 } else {
                     Toast.makeText(getApplicationContext(), "Debe Registrar un Rol", Toast.LENGTH_SHORT).show();
                 }
@@ -177,7 +211,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         return txtUserPassword.getText().toString().equals(txtUserPasswordConfirm.getText().toString());
     }
 
-    private void saveUser() {
+    private void saveUser(String name, String userName, String password, String email, String phone, int rolId) {
+
         db = conn.getWritableDatabase();
 
         String insert = "INSERT INTO " +
@@ -188,11 +223,11 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                 FIELD_U_EMAIL + ", " +
                 FIELD_U_PHONE + ", " +
                 FIELD_U_ROLE + ") VALUES ('" +
-                txtUserName.getText().toString() + "', '" +
-                txtUserUsername.getText().toString() + "', '" +
-                txtUserPassword.getText().toString() + "', '" +
-                txtUserEmail.getText().toString() + "', '" +
-                txtUserPhone.getText().toString() + "', " +
+                name + "', '" +
+                userName + "', '" +
+                password + "', '" +
+                email + "', '" +
+                phone + "', " +
                 rolId + ")";
 
         db.execSQL(insert);
@@ -202,16 +237,16 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         startActivity(new Intent(getApplicationContext(), UsersActivity.class));
     }
 
-    private void updateUser() {
+    private void updateUser(String name, String userName, String password, String email, String phone, int rolId) {
         db = conn.getWritableDatabase();
 
         String update = "UPDATE " +
                 TABLE_USER + " SET " +
-                FIELD_U_NAME + "='" + txtUserName.getText().toString() + "', " +
-                FIELD_U_USER + "='" + txtUserUsername.getText().toString() + "', " +
-                FIELD_U_PASSWORD + "='" + txtUserPassword.getText().toString() + "', " +
-                FIELD_U_EMAIL + "='" + txtUserEmail.getText().toString() + "', " +
-                FIELD_U_PHONE + "='" + txtUserPhone.getText().toString() + "', " +
+                FIELD_U_NAME + "='" + name + "', " +
+                FIELD_U_USER + "='" + userName + "', " +
+                FIELD_U_PASSWORD + "='" + password + "', " +
+                FIELD_U_EMAIL + "='" + email + "', " +
+                FIELD_U_PHONE + "='" + phone + "', " +
                 FIELD_U_ROLE + "=" + rolId + " WHERE " +
                 FIELD_U_ID + " = " + userId;
 

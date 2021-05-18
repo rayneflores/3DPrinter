@@ -28,4 +28,5 @@
     <string name="printerBrand">Marca</string>
     <string name="printerModel">Modelo</string>
     <string name="printerUrlPhoto">Url de la Imagen</string>
+    <string name="no_tiene_usuario_registrese">No tiene Usuario? Registrese</string>
 </resources>
