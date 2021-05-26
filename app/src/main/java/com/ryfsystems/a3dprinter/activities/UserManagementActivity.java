@@ -1,8 +1,6 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,27 +11,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-import com.ryfsystems.a3dprinter.entities.Roles;
-import com.ryfsystems.a3dprinter.entities.User;
+import com.ryfsystems.a3dprinter.models.Role;
+import com.ryfsystems.a3dprinter.models.User;
 import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 
 import java.util.ArrayList;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_EMAIL;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_ID;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_NAME;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_PASSWORD;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_PHONE;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_ROLE;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_ROLE;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbVersion;
+import java.util.UUID;
 
 public class UserManagementActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -41,19 +34,19 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     Button btnRegistrar;
     EditText txtUserName, txtUserUsername, txtUserPassword, txtUserPasswordConfirm, txtUserEmail, txtUserPhone;
     Spinner spRoles;
-    SQLiteDatabase db;
     TextView lblTitle;
 
     Integer rolId = null;
-    Integer userId = null;
+    String userId = null;
 
     String encryptedPassword;
     String decryptedPassword;
 
-    ArrayList<String> listRoles;
-    ArrayList<Roles> rolesList;
+    ArrayList<Role> rolesFbList = new ArrayList<>();
+    ArrayAdapter<Role> arrayAdapterRole;
 
-    ConexionSQLiteHelper conn;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,22 +63,14 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         lblTitle = findViewById(R.id.lblUserManagementTitle);
         btnRegistrar = findViewById(R.id.btnUserRegister);
 
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, dbVersion);
+        initializeFirebase();
 
-        queryRolesList();
-
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, listRoles);
-
-        spRoles.setAdapter(adapter);
+        listFbRoles();
 
         spRoles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    rolId = rolesList.get(position - 1).getId();
-                } else {
-                    rolId = null;
-                }
+                rolId = rolesFbList.get(position).getRType();
             }
 
             @Override
@@ -93,63 +78,61 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
             }
         });
-        /**/
+
         received = getIntent().getExtras();
 
-        User user;
+        User userReceived;
 
         if (received != null) {
 
             lblTitle.setText("Actualizacion de Usuario");
             btnRegistrar.setText("Actualizar");
 
-            user = (User) received.getSerializable("user");
+            userReceived = (User) received.getSerializable("user");
 
             try {
-                decryptedPassword = PasswordUtils.decrypt(user.getUPassword(), PasswordUtils.SALT);
+                decryptedPassword = PasswordUtils.decrypt(userReceived.getUPassword(), PasswordUtils.SALT);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-
-            userId = user.getUId();
-            txtUserName.setText(user.getUName());
-            txtUserUsername.setText(user.getUUserName());
+            userId = userReceived.getUId();
+            txtUserName.setText(userReceived.getUName());
+            txtUserUsername.setText(userReceived.getUUserName());
             txtUserPassword.setText(decryptedPassword.trim());
             txtUserPasswordConfirm.setText(decryptedPassword.trim());
-            txtUserEmail.setText(user.getUEmail());
-            txtUserPhone.setText(user.getUPhone());
-            spRoles.setSelection(user.getURole());
+            txtUserEmail.setText(userReceived.getUEmail());
+            txtUserPhone.setText(userReceived.getUPhone());
+            spRoles.setSelection(userReceived.getURole());
+            rolId = userReceived.getURole();
         }
-        /**/
     }
 
-    private void queryRolesList() {
-        SQLiteDatabase db = conn.getReadableDatabase();
-
-        Roles role;
-        rolesList = new ArrayList<>();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ROLE, null);
-
-        while (cursor.moveToNext()) {
-            role = new Roles();
-            role.setId(cursor.getInt(0));
-            role.setName(cursor.getString(1));
-
-            rolesList.add(role);
-        }
-
-        fillList();
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
     }
 
-    private void fillList() {
-        listRoles = new ArrayList<>();
-        listRoles.add("Seleccione un Rol");
+    private void listFbRoles() {
+        databaseReference.child("Role").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                rolesFbList.clear();
+                for (DataSnapshot objSnapshot : snapshot.getChildren()) {
+                    Role role = objSnapshot.getValue(Role.class);
+                    rolesFbList.add(role);
 
-        for (int i = 0; i < rolesList.size(); i++) {
-            listRoles.add(rolesList.get(i).getId() + " - " + rolesList.get(i).getName());
-        }
+                    arrayAdapterRole = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, rolesFbList);
+                    spRoles.setAdapter(arrayAdapterRole);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     @Override
@@ -161,6 +144,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                         try {
                             encryptedPassword = PasswordUtils.encrypt(txtUserPassword.getText().toString(), PasswordUtils.SALT);
                             updateUser(
+                                    userId,
                                     txtUserName.getText().toString(),
                                     txtUserUsername.getText().toString(),
                                     encryptedPassword.trim(),
@@ -213,46 +197,37 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
     private void saveUser(String name, String userName, String password, String email, String phone, int rolId) {
 
-        db = conn.getWritableDatabase();
+        User user = new User();
+        user.setUId(UUID.randomUUID().toString());
+        user.setUName(name);
+        user.setUUserName(userName);
+        user.setUPassword(password);
+        user.setUEmail(email);
+        user.setUPhone(phone);
+        user.setURole(rolId);
 
-        String insert = "INSERT INTO " +
-                TABLE_USER + " (" +
-                FIELD_U_NAME + ", " +
-                FIELD_U_USER + ", " +
-                FIELD_U_PASSWORD + ", " +
-                FIELD_U_EMAIL + ", " +
-                FIELD_U_PHONE + ", " +
-                FIELD_U_ROLE + ") VALUES ('" +
-                name + "', '" +
-                userName + "', '" +
-                password + "', '" +
-                email + "', '" +
-                phone + "', " +
-                rolId + ")";
+        databaseReference.child("User").child(user.getUId()).setValue(user);
 
-        db.execSQL(insert);
         Toast.makeText(getApplicationContext(), "Usuario Registrado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        db.close();
+
         finish();
         startActivity(new Intent(getApplicationContext(), UsersActivity.class));
     }
 
-    private void updateUser(String name, String userName, String password, String email, String phone, int rolId) {
-        db = conn.getWritableDatabase();
+    private void updateUser(String userId, String name, String userName, String password, String email, String phone, int rolId) {
 
-        String update = "UPDATE " +
-                TABLE_USER + " SET " +
-                FIELD_U_NAME + "='" + name + "', " +
-                FIELD_U_USER + "='" + userName + "', " +
-                FIELD_U_PASSWORD + "='" + password + "', " +
-                FIELD_U_EMAIL + "='" + email + "', " +
-                FIELD_U_PHONE + "='" + phone + "', " +
-                FIELD_U_ROLE + "=" + rolId + " WHERE " +
-                FIELD_U_ID + " = " + userId;
+        User user = new User();
+        user.setUId(userId);
+        user.setUName(name);
+        user.setUUserName(userName);
+        user.setUPassword(password);
+        user.setUEmail(email);
+        user.setUPhone(phone);
+        user.setURole(rolId);
 
-        db.execSQL(update);
+        databaseReference.child("User").child(user.getUId()).setValue(user);
+
         Toast.makeText(getApplicationContext(), "Usuario Actualizado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        db.close();
         finish();
         startActivity(new Intent(getApplicationContext(), UsersActivity.class));
     }

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "241078318629",
+    "firebase_url": "https://dprint-9b7a0-default-rtdb.firebaseio.com",
+    "project_id": "dprint-9b7a0",
+    "storage_bucket": "dprint-9b7a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241078318629:android:8b46ffdd4c4001f6b831cc",
+        "android_client_info": {
+          "package_name": "com.ryfsystems.a3dprinter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241078318629-9qktvh23qedt7v1p0sp75b12u9idl52i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ryfsystems.a3dprinter",
+            "certificate_hash": "c2f7565434ff22660dd102bd0bfc723453590fae"
+          }
+        },
+        {
+          "client_id": "241078318629-la5phfnq7949qgkhu5t53sf6rkp0eara.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnBgsRlmtd7q8zil5KIjloTptfyKYlzVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241078318629-la5phfnq7949qgkhu5t53sf6rkp0eara.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

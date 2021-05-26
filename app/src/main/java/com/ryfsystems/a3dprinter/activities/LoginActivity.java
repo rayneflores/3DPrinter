@@ -1,7 +1,7 @@
 package com.ryfsystems.a3dprinter.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -10,24 +10,25 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_NAME;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_PASSWORD;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_ROLE;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_U_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
+import com.ryfsystems.a3dprinter.models.User;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnLogin;
-    ConexionSQLiteHelper conn;
-    EditText txtLoginUser, txtLoginPassword;
+    /*ConexionSQLiteHelper conn;*/
+    EditText txtLoginUserEmail, txtLoginPassword;
     SQLiteDatabase db;
     TextView txtNewUser;
 
@@ -35,22 +36,43 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     String userName = null;
     String encryptedPassword;
 
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+    FirebaseAuth firebaseAuth;
+
+    ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);
+        /*conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);*/
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Espere...");
+        progressDialog.setMessage("Comprobando Usuario y Password");
+        progressDialog.setCanceledOnTouchOutside(false);
 
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
 
-        txtLoginUser = findViewById(R.id.txtLoginUser);
+        txtLoginUserEmail = findViewById(R.id.txtLoginUserEmail);
         txtLoginPassword = findViewById(R.id.txtLoginPassword);
 
         txtNewUser = findViewById(R.id.txtNewUser);
         txtNewUser.setOnClickListener(this);
+
+        initializeFirebase();
     }
+
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        databaseReference = firebaseDatabase.getReference();
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -63,17 +85,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btnLogin:
                 if (allFilled()) {
-                    if (chekUserPassword(txtLoginUser.getText().toString(), txtLoginPassword.getText().toString())) {
-                        intent = new Intent(getApplicationContext(), MainActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("rolId", rolId);
-                        bundle.putString("userName", userName);
-                        intent.putExtras(bundle);
-                        finish();
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Combinacion Usuario/Password Incorrecta!!!", Toast.LENGTH_SHORT).show();
-                    }
+                    chekUserPassword(txtLoginUserEmail.getText().toString(), txtLoginPassword.getText().toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "Debe llenar todos los Campos", Toast.LENGTH_SHORT).show();
                 }
@@ -82,12 +94,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private boolean allFilled() {
-        return !txtLoginUser.getText().toString().trim().equalsIgnoreCase("") &&
+        return !txtLoginUserEmail.getText().toString().trim().equalsIgnoreCase("") &&
                 !txtLoginPassword.getText().toString().trim().equalsIgnoreCase("");
     }
 
-    private boolean chekUserPassword(String user, String password) {
-        db = conn.getReadableDatabase();
+    private void chekUserPassword(String email, String password) {
+
+        /*db = conn.getReadableDatabase();
 
         try {
             encryptedPassword = PasswordUtils.encrypt(password, PasswordUtils.SALT);
@@ -101,8 +114,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         " WHERE " + FIELD_U_PASSWORD + " = '" + encryptedPassword.trim() + "'" +
                         "AND " + FIELD_U_USER + " = '" + user + "'";
 
-        System.out.println("Aqui: " + query);
-
         Cursor cursor = db.rawQuery(query, null);
 
         while (cursor.moveToNext()) {
@@ -114,6 +125,33 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         cursor.close();
-        return false;
+        return false;*/
+        progressDialog.show();
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    @Override
+                    public void onSuccess(AuthResult authResult) {
+                        progressDialog.dismiss();
+                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                        User user = new User();
+                        user.setUId(firebaseUser.getUid());
+
+                        Intent intent;
+                        intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("rolId", rolId);
+                        bundle.putString("userName", userName);
+                        intent.putExtras(bundle);
+                        finish();
+                        startActivity(intent);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }

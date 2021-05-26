@@ -1,34 +1,38 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-import com.ryfsystems.a3dprinter.entities.User;
+import com.ryfsystems.a3dprinter.models.User;
 
 import java.util.ArrayList;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_USER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
 
 public class UsersActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnAddUser;
     ListView lvUsers;
 
-    ArrayList<String> listUsers;
-    ArrayList<User> usersList;
+    ArrayList<User> usersFbList = new ArrayList<>();
+    ArrayAdapter<User> arrayAdapterUser;
 
-    ConexionSQLiteHelper conn;
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;
+
+    User userSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,57 +44,48 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
 
         lvUsers = findViewById(R.id.lvUsers);
 
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);
+        initializeFirebase();
 
-        queryUsersList();
-
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, listUsers);
-
-        lvUsers.setAdapter(adapter);
+        listFbUsers();
 
         lvUsers.setOnItemClickListener((parent, view, position, id) -> {
-
-            User user = usersList.get(position);
-
-            Intent intent = new Intent(getApplicationContext(), UserManagementActivity.class);
-
+            userSelected = (User) parent.getItemAtPosition(position);
+            Intent intent = new Intent(UsersActivity.this.getApplicationContext(), UserManagementActivity.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("user", user);
+            bundle.putSerializable("user", userSelected);
             intent.putExtras(bundle);
-            finish();
-            startActivity(intent);
+            UsersActivity.this.finish();
+            UsersActivity.this.startActivity(intent);
         });
     }
 
-    private void queryUsersList() {
-        SQLiteDatabase db = conn.getReadableDatabase();
-
-        User user;
-        usersList = new ArrayList<>();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
-
-        while (cursor.moveToNext()) {
-            user = new User();
-            user.setUId(cursor.getInt(0));
-            user.setUName(cursor.getString(1));
-            user.setUUserName(cursor.getString(2));
-            user.setUPassword(cursor.getString(3));
-            user.setUEmail(cursor.getString(4));
-            user.setUPhone(cursor.getString(5));
-            user.setURole(cursor.getInt(6));
-
-            usersList.add(user);
-        }
-        getList();
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        databaseReference = firebaseDatabase.getReference();
     }
 
-    private void getList() {
-        listUsers = new ArrayList<>();
+    private void listFbUsers() {
 
-        for (int i = 0; i < usersList.size(); i++) {
-            listUsers.add(usersList.get(i).getUId() + ".- " + usersList.get(i).getUName());
-        }
+        databaseReference.child("User").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                usersFbList.clear();
+                for (DataSnapshot objSnapshot : snapshot.getChildren()) {
+                    User user = objSnapshot.getValue(User.class);
+                    usersFbList.add(user);
+
+                    arrayAdapterUser = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_list_item_1, usersFbList);
+                    lvUsers.setAdapter(arrayAdapterUser);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     @Override
