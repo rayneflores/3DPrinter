@@ -1,7 +1,6 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
@@ -12,15 +11,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
 import com.ryfsystems.a3dprinter.models.User;
 import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
-import com.ryfsystems.a3dprinter.utilities.Utilities;
-
-import java.util.UUID;
 
 import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
 
@@ -35,9 +32,11 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
 
     ConexionSQLiteHelper conn;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    /*FirebaseDatabase firebaseDatabase;
+    DatabaseReference databaseReference;*/
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +57,10 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
 
     private void initializeFirebase() {
         FirebaseApp.initializeApp(this);
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        /*firebaseDatabase = FirebaseDatabase.getInstance();*/
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = firebaseDatabase.getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        /*databaseReference = firebaseDatabase.getReference();*/
     }
 
     @Override
@@ -71,32 +71,24 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                     if (validaPass()) {
                         try {
                             encryptedPassword = PasswordUtils.encrypt(txtRegisterUserPassword.getText().toString(), PasswordUtils.SALT);
-
-                            firebaseAuth.createUserWithEmailAndPassword(txtRegisterUserEmail.getText().toString(), encryptedPassword).addOnCompleteListener(task -> {
-                                if (task.isSuccessful()) {
-                                    User user = new User();
-                                    user.setUId(firebaseAuth.getCurrentUser().getUid());
-                                    user.setUName(txtRegisterUserName.getText().toString());
-                                    user.setUUserName(txtRegisterUserUsername.getText().toString());
-                                    user.setUPassword(encryptedPassword.trim());
-                                    user.setUEmail(txtRegisterUserEmail.getText().toString());
-                                    user.setUPhone(txtRegisterUserPhone.getText().toString());
-                                    user.setURole(rolId);
-
-                                    databaseReference.child("User").child(user.getUId()).setValue(user).addOnCompleteListener(taskResult -> {
-                                        if (taskResult.isSuccessful()) {
-                                            Toast.makeText(getApplicationContext(), "Usuario Creado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-                                            finish();
-                                            startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                                        } else {
-                                            Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-
-                                } else {
-                                    Toast.makeText(getApplicationContext(), "No se pudo registrar el Usuario", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                            firebaseAuth.createUserWithEmailAndPassword(txtRegisterUserEmail.getText().toString(), encryptedPassword)
+                                    .addOnSuccessListener(authResult -> {
+                                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                                        User user = new User();
+                                        user.setUId(firebaseUser.getUid());
+                                        user.setUName(txtRegisterUserName.getText().toString());
+                                        user.setUUserName(txtRegisterUserUsername.getText().toString());
+                                        user.setUPassword(encryptedPassword.trim());
+                                        user.setUEmail(txtRegisterUserEmail.getText().toString());
+                                        user.setUPhone(txtRegisterUserPhone.getText().toString());
+                                        user.setURole(rolId);
+                                        Toast.makeText(getApplicationContext(), "Cuenta de Usuario Creada", Toast.LENGTH_SHORT).show();
+                                        DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
+                                        documentReference.set(user);
+                                        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                                        finish();
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario", Toast.LENGTH_SHORT).show());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -111,32 +103,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
-
-    private void registerUser(String name, String userName, String password, String email, String phone) {
-
-        /*Para Firebase*/
-        User user = new User();
-        user.setUId(UUID.randomUUID().toString());
-        user.setUName(name);
-        user.setUUserName(userName);
-        user.setUPassword(password);
-        user.setUEmail(email);
-        user.setUPhone(phone);
-        user.setURole(rolId);
-
-        databaseReference.child("User").child(user.getUId()).setValue(user);
-        /*End Firebase*/
-
-        finish();
-        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-    }
-
-    private int validUser(String username) {
-        db = conn.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + Utilities.TABLE_USER + " WHERE " + Utilities.FIELD_U_USER + " = '" + username + "'", null);
-        return cursor.getCount();
-    }
-
 
     private boolean allFilled() {
         return

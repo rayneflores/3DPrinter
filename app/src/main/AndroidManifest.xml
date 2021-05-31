@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.3DPrinter">
-        <activity android:name=".activities.RegisterUserActivity"></activity>
+        <activity android:name=".activities.RegisterUserActivity" />
         <activity android:name=".activities.PrinterManagementActivity" />
         <activity android:name=".activities.PrintersActivity" />
         <activity android:name=".activities.LoginActivity" />
