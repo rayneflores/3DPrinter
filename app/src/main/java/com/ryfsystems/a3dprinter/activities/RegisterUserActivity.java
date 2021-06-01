@@ -15,25 +15,18 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
 import com.ryfsystems.a3dprinter.models.User;
 import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
 
 public class RegisterUserActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText txtRegisterUserName, txtRegisterUserUsername, txtRegisterUserPassword, txtRegisterUserPasswordConfirm, txtRegisterUserEmail, txtRegisterUserPhone;
     SQLiteDatabase db;
 
-    /*Rol creado de Usuario Basico para los Usuarios Creados por fuera*/
+    /*Rol creado de Usuario Basico para los Usuarios Creados por la misma aplicacion*/
     Integer rolId = 2;
     String encryptedPassword = null;
 
-    ConexionSQLiteHelper conn;
-
-    /*FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;*/
     FirebaseAuth firebaseAuth;
     FirebaseFirestore firebaseFirestore;
 
@@ -42,8 +35,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_user);
-
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);
 
         txtRegisterUserName = findViewById(R.id.txtRegisterUserName);
         txtRegisterUserUsername = findViewById(R.id.txtRegisterUserUsername);
@@ -57,10 +48,8 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
 
     private void initializeFirebase() {
         FirebaseApp.initializeApp(this);
-        /*firebaseDatabase = FirebaseDatabase.getInstance();*/
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseFirestore = FirebaseFirestore.getInstance();
-        /*databaseReference = firebaseDatabase.getReference();*/
     }
 
     @Override

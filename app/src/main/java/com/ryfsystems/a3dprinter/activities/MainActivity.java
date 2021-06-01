@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivUsers, ivPrinters;
     TextView tvUsers, tvPrinters, tvLoggedAs;
 
-    Integer rolId;
+    Long rolId;
     String userName;
 
     @Override
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         received = getIntent().getExtras();
 
         if (received != null) {
-            rolId = received.getInt("rolId");
+            rolId = received.getLong("rolId");
             userName = received.getString("userName");
         }
 
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvLoggedAs.setText("Usuario: " + userName);
 
-        enableCardsRoles(rolId);
+        enableCardsRoles(Math.toIntExact(rolId));
     }
 
     private void enableCardsRoles(Integer rolId) {

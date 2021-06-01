@@ -14,31 +14,24 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.models.User;
+import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnLogin;
-    /*ConexionSQLiteHelper conn;*/
     EditText txtLoginUserEmail, txtLoginPassword;
     SQLiteDatabase db;
     TextView txtNewUser;
 
-    Integer rolId = null;
-    String userName = null;
     String encryptedPassword;
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
 
     ProgressDialog progressDialog;
 
@@ -46,8 +39,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        /*conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);*/
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Espere...");
@@ -68,9 +59,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void initializeFirebase() {
         FirebaseApp.initializeApp(this);
-        firebaseDatabase = FirebaseDatabase.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = firebaseDatabase.getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
 
@@ -85,6 +75,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btnLogin:
                 if (allFilled()) {
+                    progressDialog.show();
                     chekUserPassword(txtLoginUserEmail.getText().toString(), txtLoginPassword.getText().toString());
                 } else {
                     Toast.makeText(getApplicationContext(), "Debe llenar todos los Campos", Toast.LENGTH_SHORT).show();
@@ -99,6 +90,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void chekUserPassword(String email, String password) {
+
+        try {
+            encryptedPassword = PasswordUtils.encrypt(password, PasswordUtils.SALT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         /*db = conn.getReadableDatabase();
 
@@ -126,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         cursor.close();
         return false;*/
-        progressDialog.show();
+        /*progressDialog.show();
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
@@ -152,6 +149,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         progressDialog.dismiss();
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
+                });*/
+
+        firebaseAuth.signInWithEmailAndPassword(email, encryptedPassword)
+                .addOnSuccessListener(authResult -> {
+
+                    DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseAuth.getCurrentUser().getUid());
+                    documentReference.get()
+                            .addOnSuccessListener(documentSnapshot -> {
+                                Intent intent;
+                                intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putLong("rolId", (Long) documentSnapshot.get("urole"));
+                                bundle.putString("userName", documentSnapshot.getString("uname"));
+                                intent.putExtras(bundle);
+                                progressDialog.dismiss();
+                                startActivity(intent);
+                                finish();
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
                 });
     }
+
+    /*@Override
+    protected void onStart() {
+        super.onStart();
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            finish();
+        }
+    }*/
 }
