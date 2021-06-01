@@ -9,6 +9,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
 
@@ -18,12 +19,14 @@ import static com.ryfsystems.a3dprinter.utilities.Utilities.dbVersion;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Bundle received;
-    CardView cvUsers, cvPrinters, cvServiceOrder;
+    CardView cvUsers, cvPrinters, cvServiceOrder, cvLogout;
     ImageView ivUsers, ivPrinters;
     TextView tvUsers, tvPrinters, tvLoggedAs;
 
     Long rolId;
     String userName;
+
+    Intent i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cvUsers = findViewById(R.id.cvUsers);
         cvPrinters = findViewById(R.id.cvPrinters);
         cvServiceOrder = findViewById(R.id.cvServiceOrders);
+        cvLogout = findViewById(R.id.cvLogout);
 
         ivUsers = findViewById(R.id.ivUsers);
         ivPrinters = findViewById(R.id.ivPrinters);
@@ -53,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cvUsers.setOnClickListener(this);
         cvPrinters.setOnClickListener(this);
         cvServiceOrder.setOnClickListener(this);
+        cvLogout.setOnClickListener(this);
 
         tvLoggedAs.setText("Usuario: " + userName);
 
@@ -76,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        Intent i;
         switch (v.getId()) {
             case R.id.cvUsers:
                 i = new Intent(getApplicationContext(), UsersActivity.class);
@@ -86,6 +90,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i = new Intent(getApplicationContext(), PrintersActivity.class);
                 startActivity(i);
                 break;
+            case R.id.cvLogout:
+                FirebaseAuth.getInstance().signOut();
+                i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
+                finish();
+                break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        FirebaseAuth.getInstance().signOut();
+        i = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 }

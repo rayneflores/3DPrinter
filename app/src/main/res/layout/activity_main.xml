@@ -62,10 +62,8 @@
             android:layout_width="373dp"
             android:layout_height="104dp"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="20sp"
             android:layout_marginEnd="20sp"
-            android:layout_marginRight="20sp"
             android:background="@color/colorGris"
             app:cardBackgroundColor="@color/colorGris"
             app:cardCornerRadius="10sp"
@@ -78,7 +76,6 @@
                 android:layout_height="81dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:contentDescription="@string/todo"
                 android:src="@drawable/user" />
 
@@ -101,10 +98,8 @@
             android:layout_width="373dp"
             android:layout_height="104dp"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="20sp"
             android:layout_marginEnd="20sp"
-            android:layout_marginRight="20sp"
             android:background="@color/colorGris"
             app:cardBackgroundColor="@color/colorGris"
             app:cardCornerRadius="10sp"
@@ -117,7 +112,6 @@
                 android:layout_height="81dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:contentDescription="@string/todo"
                 android:src="@drawable/printers" />
 
@@ -140,10 +134,8 @@
             android:layout_width="373dp"
             android:layout_height="104dp"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="20sp"
             android:layout_marginEnd="20sp"
-            android:layout_marginRight="20sp"
             android:background="@color/colorGris"
             app:cardBackgroundColor="@color/colorGris"
             app:cardCornerRadius="10sp"
@@ -156,7 +148,6 @@
                 android:layout_height="81dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
                 android:contentDescription="@string/todo"
                 android:src="@drawable/orders" />
 
@@ -167,7 +158,43 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="100dp"
                 android:layout_marginEnd="70dp"
-                android:text="Orden de Servicio"
+                android:text="@string/orden_de_servicio"
+                android:textColor="@color/iconsColor"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvLogout"
+            android:layout_width="373dp"
+            android:layout_height="104dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20sp"
+            android:layout_marginEnd="20sp"
+            android:background="@color/colorGris"
+            app:cardBackgroundColor="@color/colorGris"
+            app:cardCornerRadius="10sp"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints">
+
+            <ImageView
+                android:id="@+id/ivLogout"
+                android:layout_width="80dp"
+                android:layout_height="81dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="8dp"
+                android:contentDescription="@string/todo"
+                android:src="@drawable/logout" />
+
+            <TextView
+                android:id="@+id/tvLogout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="70dp"
+                android:text="@string/salir"
                 android:textColor="@color/iconsColor"
                 android:textSize="24sp"
                 android:textStyle="bold" />
