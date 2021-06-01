@@ -8,15 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ryfsystems.a3dprinter.R;
 
-public class ViewHolder extends RecyclerView.ViewHolder {
+public class UserViewHolder extends RecyclerView.ViewHolder {
 
     public TextView txtListUserName, txtListUserEmail, txtListUserPhone;
 
     View mView;
-    private ViewHolder.ClickListener mClickListener;
+    private UserViewHolder.ClickListener mClickListener;
 
 
-    public ViewHolder(@NonNull View itemView) {
+    public UserViewHolder(@NonNull View itemView) {
         super(itemView);
 
         mView = itemView;
@@ -32,13 +32,12 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         txtListUserPhone = itemView.findViewById(R.id.txtListUserPhone);
     }
 
-    public void setOnClickListener(ViewHolder.ClickListener clickListener) {
+    public void setOnClickListener(UserViewHolder.ClickListener clickListener) {
         mClickListener = clickListener;
     }
 
     public interface ClickListener {
         void onItemClick(View view, int position);
-
         void onItemLongClick(View view, int position);
     }
 }

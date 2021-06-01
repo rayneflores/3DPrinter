@@ -10,8 +10,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
-    private Integer uId;
-    private Integer rType;
+    private String rId;
+    private Long rType;
     private String rName;
 
     @Override

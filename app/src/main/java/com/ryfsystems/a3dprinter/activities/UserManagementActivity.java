@@ -11,22 +11,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.models.Role;
 import com.ryfsystems.a3dprinter.models.User;
 import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 
 import java.util.ArrayList;
-import java.util.UUID;
+import java.util.List;
 
 public class UserManagementActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -36,17 +36,19 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     Spinner spRoles;
     TextView lblTitle;
 
-    Integer rolId = null;
+    Long rolId = null;
     String userId = null;
 
     String encryptedPassword;
     String decryptedPassword;
 
-    ArrayList<Role> rolesFbList = new ArrayList<>();
-    ArrayAdapter<Role> arrayAdapterRole;
+    List<Role> rolesFbList = new ArrayList<>();
 
-    FirebaseDatabase firebaseDatabase;
-    DatabaseReference databaseReference;
+    FirebaseFirestore firebaseFirestore;
+    FirebaseAuth firebaseAuth;
+    CollectionReference collectionReference;
+
+    Role role;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,35 +106,35 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
             txtUserEmail.setText(userReceived.getUEmail());
             txtUserPhone.setText(userReceived.getUPhone());
             spRoles.setSelection(userReceived.getURole());
-            rolId = userReceived.getURole();
+            rolId = Long.valueOf(userReceived.getURole());
         }
     }
 
     private void initializeFirebase() {
         FirebaseApp.initializeApp(this);
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        collectionReference = firebaseFirestore.collection("Role");
     }
 
     private void listFbRoles() {
-        databaseReference.child("Role").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                rolesFbList.clear();
-                for (DataSnapshot objSnapshot : snapshot.getChildren()) {
-                    Role role = objSnapshot.getValue(Role.class);
-                    rolesFbList.add(role);
 
-                    arrayAdapterRole = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, rolesFbList);
-                    spRoles.setAdapter(arrayAdapterRole);
-                }
+        ArrayAdapter<Role> roleAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, rolesFbList);
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spRoles.setAdapter(roleAdapter);
+
+        collectionReference.get().addOnCompleteListener(task -> {
+            for (DocumentSnapshot ds : task.getResult()) {
+                role = new Role(
+                        ds.getString("rid"),
+                        ds.getLong("rtype"),
+                        ds.getString("rname")
+                );
+                rolesFbList.add(role);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+            roleAdapter.notifyDataSetChanged();
+        })
+                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
@@ -150,7 +152,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                     encryptedPassword.trim(),
                                     txtUserEmail.getText().toString(),
                                     txtUserPhone.getText().toString(),
-                                    rolId
+                                    Math.toIntExact(rolId)
                             );
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -158,14 +160,26 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                     } else {
                         try {
                             encryptedPassword = PasswordUtils.encrypt(txtUserPassword.getText().toString(), PasswordUtils.SALT);
-                            saveUser(
-                                    txtUserName.getText().toString(),
-                                    txtUserUsername.getText().toString(),
-                                    encryptedPassword.trim(),
-                                    txtUserEmail.getText().toString(),
-                                    txtUserPhone.getText().toString(),
-                                    rolId
-                            );
+                            firebaseAuth.createUserWithEmailAndPassword(txtUserEmail.getText().toString(), encryptedPassword)
+                                    .addOnSuccessListener(authResult -> {
+                                        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                                        User user = new User();
+                                        user.setUId(firebaseUser.getUid());
+                                        user.setUName(txtUserName.getText().toString());
+                                        user.setUUserName(txtUserUsername.getText().toString());
+                                        user.setUPassword(encryptedPassword.trim());
+                                        user.setUEmail(txtUserEmail.getText().toString());
+                                        user.setUPhone(txtUserPhone.getText().toString());
+                                        user.setURole(Math.toIntExact(rolId));
+                                        DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
+                                        documentReference.set(user);
+
+                                        Toast.makeText(getApplicationContext(), "Usuario Registrado Satisfactoriamente", Toast.LENGTH_SHORT).show();
+
+                                        finish();
+                                        startActivity(new Intent(getApplicationContext(), UsersActivity.class));
+                                    })
+                                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario", Toast.LENGTH_SHORT).show());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -195,25 +209,6 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         return txtUserPassword.getText().toString().equals(txtUserPasswordConfirm.getText().toString());
     }
 
-    private void saveUser(String name, String userName, String password, String email, String phone, int rolId) {
-
-        User user = new User();
-        user.setUId(UUID.randomUUID().toString());
-        user.setUName(name);
-        user.setUUserName(userName);
-        user.setUPassword(password);
-        user.setUEmail(email);
-        user.setUPhone(phone);
-        user.setURole(rolId);
-
-        databaseReference.child("User").child(user.getUId()).setValue(user);
-
-        Toast.makeText(getApplicationContext(), "Usuario Registrado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-
-        finish();
-        startActivity(new Intent(getApplicationContext(), UsersActivity.class));
-    }
-
     private void updateUser(String userId, String name, String userName, String password, String email, String phone, int rolId) {
 
         User user = new User();
@@ -225,7 +220,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         user.setUPhone(phone);
         user.setURole(rolId);
 
-        databaseReference.child("User").child(user.getUId()).setValue(user);
+        //databaseReference.child("User").child(user.getUId()).setValue(user);
 
         Toast.makeText(getApplicationContext(), "Usuario Actualizado Satisfactoriamente", Toast.LENGTH_SHORT).show();
         finish();

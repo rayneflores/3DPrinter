@@ -1,6 +1,5 @@
 package com.ryfsystems.a3dprinter.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.activities.UsersActivity;
 import com.ryfsystems.a3dprinter.models.User;
-import com.ryfsystems.a3dprinter.viewHolders.ViewHolder;
+import com.ryfsystems.a3dprinter.viewHolders.UserViewHolder;
 
 import java.util.List;
 
-public class UserAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     UsersActivity usersActivity;
     List<User> userList;
-    Context context;
 
     public UserAdapter(UsersActivity usersActivity, List<User> userList) {
         this.usersActivity = usersActivity;
@@ -29,14 +27,14 @@ public class UserAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+    public UserViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View itemView = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.users_layout, viewGroup, false);
 
-        ViewHolder viewHolder = new ViewHolder(itemView);
+        UserViewHolder viewHolder = new UserViewHolder(itemView);
 
-        viewHolder.setOnClickListener(new ViewHolder.ClickListener() {
+        viewHolder.setOnClickListener(new UserViewHolder.ClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 String userName = userList.get(position).getUUserName();
@@ -60,7 +58,7 @@ public class UserAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull UserViewHolder viewHolder, int i) {
         viewHolder.txtListUserName.setText(userList.get(i).getUName());
         viewHolder.txtListUserEmail.setText(userList.get(i).getUEmail());
         viewHolder.txtListUserPhone.setText(userList.get(i).getUPhone());

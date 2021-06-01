@@ -26,12 +26,12 @@ public class Utilities {
             FIELD_U_PHONE + " TEXT, " +
             FIELD_U_ROLE + " INTEGER)";
 
-    // Constantes Campos Tabla Roles
+    // Constantes Campos Tabla Role
     public static final String TABLE_ROLE = "role";
     public static final String FIELD_R_ID = "rid";
     public static final String FIELD_R_NAME = "rname";
 
-    // Creacion de tabla Roles
+    // Creacion de tabla Role
     public static final String CREATE_TABLE_ROLE = "CREATE TABLE " +
             TABLE_ROLE + " (" +
             FIELD_R_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +

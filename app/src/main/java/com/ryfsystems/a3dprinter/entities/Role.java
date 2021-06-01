@@ -11,7 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Roles implements Serializable {
-    private Integer id;
-    private String name;
+public class Role implements Serializable {
+    private String rId;
+    private Long rType;
+    private String rName;
 }
