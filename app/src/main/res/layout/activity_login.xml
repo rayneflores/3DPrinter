@@ -18,7 +18,7 @@
 
     <EditText
         android:id="@+id/txtLoginUserEmail"
-        android:layout_width="170dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
         android:hint="@string/email"
@@ -29,7 +29,7 @@
 
     <EditText
         android:id="@+id/txtLoginPassword"
-        android:layout_width="170dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="@string/password"
