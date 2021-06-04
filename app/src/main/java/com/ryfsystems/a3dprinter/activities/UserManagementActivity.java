@@ -32,7 +32,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
     Bundle received;
     Button btnRegistrar;
-    EditText txtUserName, txtUserUsername, txtUserPassword, txtUserPasswordConfirm, txtUserEmail, txtUserPhone;
+    EditText txtUserName, txtUserPassword, txtUserPasswordConfirm, txtUserEmail, txtUserPhone;
     Spinner spRoles;
     TextView lblTitle;
 
@@ -56,7 +56,6 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_user_management);
 
         txtUserName = findViewById(R.id.txtUserName);
-        txtUserUsername = findViewById(R.id.txtUserUsername);
         txtUserPassword = findViewById(R.id.txtUserPassword);
         txtUserPasswordConfirm = findViewById(R.id.txtUserPasswordConfirm);
         txtUserEmail = findViewById(R.id.txtUserEmail);
@@ -100,13 +99,11 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
             userId = userReceived.getUId();
             txtUserName.setText(userReceived.getUName());
-            txtUserUsername.setText(userReceived.getUUserName());
             txtUserPassword.setText(decryptedPassword.trim());
             txtUserPasswordConfirm.setText(decryptedPassword.trim());
             txtUserEmail.setText(userReceived.getUEmail());
             txtUserPhone.setText(userReceived.getUPhone());
-            spRoles.setSelection(userReceived.getURole());
-            rolId = Long.valueOf(userReceived.getURole());
+            spRoles.setSelection(Math.toIntExact(userReceived.getURole()));
         }
     }
 
@@ -148,11 +145,10 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                             updateUser(
                                     userId,
                                     txtUserName.getText().toString(),
-                                    txtUserUsername.getText().toString(),
                                     encryptedPassword.trim(),
                                     txtUserEmail.getText().toString(),
                                     txtUserPhone.getText().toString(),
-                                    Math.toIntExact(rolId)
+                                    rolId
                             );
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -166,11 +162,10 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                         User user = new User();
                                         user.setUId(firebaseUser.getUid());
                                         user.setUName(txtUserName.getText().toString());
-                                        user.setUUserName(txtUserUsername.getText().toString());
                                         user.setUPassword(encryptedPassword.trim());
                                         user.setUEmail(txtUserEmail.getText().toString());
                                         user.setUPhone(txtUserPhone.getText().toString());
-                                        user.setURole(Math.toIntExact(rolId));
+                                        user.setURole(rolId);
                                         DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
                                         documentReference.set(user);
 
@@ -198,7 +193,6 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     private Boolean allFilled() {
         return
                 !txtUserName.getText().toString().trim().equalsIgnoreCase("") &&
-                        !txtUserUsername.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtUserPassword.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtUserPasswordConfirm.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtUserEmail.getText().toString().trim().equalsIgnoreCase("") &&
@@ -209,12 +203,11 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         return txtUserPassword.getText().toString().equals(txtUserPasswordConfirm.getText().toString());
     }
 
-    private void updateUser(String userId, String name, String userName, String password, String email, String phone, int rolId) {
+    private void updateUser(String userId, String name, String password, String email, String phone, Long rolId) {
 
         User user = new User();
         user.setUId(userId);
         user.setUName(name);
-        user.setUUserName(userName);
         user.setUPassword(password);
         user.setUEmail(email);
         user.setUPhone(phone);

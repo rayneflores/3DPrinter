@@ -20,11 +20,11 @@ import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 
 public class RegisterUserActivity extends AppCompatActivity implements View.OnClickListener {
 
-    EditText txtRegisterUserName, txtRegisterUserUsername, txtRegisterUserPassword, txtRegisterUserPasswordConfirm, txtRegisterUserEmail, txtRegisterUserPhone;
+    EditText txtRegisterUserName, txtRegisterUserPassword, txtRegisterUserPasswordConfirm, txtRegisterUserEmail, txtRegisterUserPhone;
     SQLiteDatabase db;
 
     /*Rol creado de Usuario Basico para los Usuarios Creados por la misma aplicacion*/
-    Integer rolId = 2;
+    Long rolId = 2l;
     String encryptedPassword = null;
 
     FirebaseAuth firebaseAuth;
@@ -37,7 +37,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
         setContentView(R.layout.activity_register_user);
 
         txtRegisterUserName = findViewById(R.id.txtRegisterUserName);
-        txtRegisterUserUsername = findViewById(R.id.txtRegisterUserUsername);
         txtRegisterUserPassword = findViewById(R.id.txtRegisterUserPassword);
         txtRegisterUserPasswordConfirm = findViewById(R.id.txtRegisterUserPasswordConfirm);
         txtRegisterUserEmail = findViewById(R.id.txtRegisterUserEmail);
@@ -66,7 +65,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                                         User user = new User();
                                         user.setUId(firebaseUser.getUid());
                                         user.setUName(txtRegisterUserName.getText().toString());
-                                        user.setUUserName(txtRegisterUserUsername.getText().toString());
                                         user.setUPassword(encryptedPassword.trim());
                                         user.setUEmail(txtRegisterUserEmail.getText().toString());
                                         user.setUPhone(txtRegisterUserPhone.getText().toString());
@@ -96,7 +94,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
     private boolean allFilled() {
         return
                 !txtRegisterUserName.getText().toString().trim().equalsIgnoreCase("") &&
-                        !txtRegisterUserUsername.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtRegisterUserPassword.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtRegisterUserPasswordConfirm.getText().toString().trim().equalsIgnoreCase("") &&
                         !txtRegisterUserEmail.getText().toString().trim().equalsIgnoreCase("") &&

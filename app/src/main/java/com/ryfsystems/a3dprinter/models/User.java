@@ -15,14 +15,13 @@ import lombok.Setter;
 public class User implements Serializable {
     private String uId;
     private String uName;
-    private String uUserName;
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Integer uRole;
+    private Long uRole;
 
     @Override
     public String toString() {
-        return uName + "    (" + uUserName + ")";
+        return uName;
     }
 }

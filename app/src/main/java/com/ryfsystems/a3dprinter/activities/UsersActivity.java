@@ -85,11 +85,10 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
                         User user = new User(
                                 documentSnapshot.getString("uid"),
                                 documentSnapshot.getString("uname"),
-                                null,
-                                null,
+                                documentSnapshot.getString("upassword"),
                                 documentSnapshot.getString("uemail"),
                                 documentSnapshot.getString("uphone"),
-                                null
+                                documentSnapshot.getLong("urole")
                         );
                         userFbList.add(user);
                     }

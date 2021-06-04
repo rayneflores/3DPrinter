@@ -14,9 +14,8 @@ import lombok.Setter;
 public class User implements Serializable {
     private Integer uId;
     private String uName;
-    private String uUserName;
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Integer uRole;
+    private Long uRole;
 }

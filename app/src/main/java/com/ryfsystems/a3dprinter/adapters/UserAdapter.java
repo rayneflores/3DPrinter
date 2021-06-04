@@ -37,7 +37,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
         viewHolder.setOnClickListener(new UserViewHolder.ClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                String userName = userList.get(position).getUUserName();
+                String userName = userList.get(position).getUName();
                 String userEmail = userList.get(position).getUEmail();
                 String userPhone = userList.get(position).getUPhone();
 
