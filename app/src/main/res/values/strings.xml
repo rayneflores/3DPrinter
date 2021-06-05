@@ -29,4 +29,6 @@
     <string name="printerModel">Modelo</string>
     <string name="printerUrlPhoto">Url de la Imagen</string>
     <string name="no_tiene_usuario_registrese">No tiene Usuario? Registrese</string>
+    <string name="lista_de_ordenes_de_servicio">Lista de Ordenes de Servicio</string>
+    <string name="nueva_orden">Nueva Orden</string>
 </resources>

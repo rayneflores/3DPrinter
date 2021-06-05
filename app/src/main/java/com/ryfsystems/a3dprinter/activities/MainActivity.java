@@ -86,6 +86,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 i = new Intent(getApplicationContext(), PrintersActivity.class);
                 startActivity(i);
                 break;
+            case R.id.cvServiceOrders:
+                i = new Intent(getApplicationContext(), ServiceOrderActivity.class);
+                startActivity(i);
+                break;
         }
     }
 }
