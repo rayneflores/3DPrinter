@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             .addOnSuccessListener(documentSnapshot -> {
                                 i = new Intent(getApplicationContext(), MainActivity.class);
                                 Bundle bundle = new Bundle();
-                                bundle.putLong("rolId", (Long) documentSnapshot.get("urole"));
+                                bundle.putLong("isAdmin", (Long) documentSnapshot.get("uisadmin"));
                                 bundle.putString("userName", documentSnapshot.getString("uname"));
                                 i.putExtras(bundle);
                                 progressDialog.dismiss();
@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    @Override
+    /*@Override
     protected void onStart() {
         super.onStart();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         Intent intent;
                         intent = new Intent(getApplicationContext(), MainActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putLong("rolId", (Long) documentSnapshot.get("urole"));
+                        bundle.putLong("isAdmin", (Long) documentSnapshot.get("uisadmin"));
                         bundle.putString("userName", documentSnapshot.getString("uname"));
                         intent.putExtras(bundle);
                         progressDialog.dismiss();
@@ -141,7 +141,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         finish();
                     });
         }
-    }
+    }*/
 
     @Override
     public void onBackPressed() {

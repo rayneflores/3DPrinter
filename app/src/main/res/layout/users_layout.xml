@@ -9,6 +9,18 @@
     app:cardUseCompatPadding="true"
     app:contentPadding="5dp">
 
+    <TextView
+        android:id="@+id/txtListUserId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txtListUserPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +33,7 @@
             android:layout_marginBottom="4dp"
             android:layout_marginStart="4dp"
             android:text="Username"
+            android:textStyle="bold"
             android:textSize="24sp" />
 
         <TextView
@@ -41,6 +54,13 @@
             android:layout_marginStart="8dp"
             android:text="Phone"
             android:textSize="18sp" />
+
+        <CheckBox
+            android:id="@+id/chkListUserIsAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/administrador" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

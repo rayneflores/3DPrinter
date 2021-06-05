@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ImageView ivUsers, ivPrinters;
     TextView tvUsers, tvPrinters, tvLoggedAs;
 
-    Long rolId;
+    Long isAdmin;
     String userName;
 
     Intent i;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         received = getIntent().getExtras();
 
         if (received != null) {
-            rolId = received.getLong("rolId");
+            isAdmin = received.getLong("isAdmin");
             userName = received.getString("userName");
         }
 
@@ -61,21 +61,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvLoggedAs.setText("Usuario: " + userName);
 
-        enableCardsRoles(Math.toIntExact(rolId));
+        enableCardsRoles(Math.toIntExact(isAdmin));
     }
 
-    private void enableCardsRoles(Integer rolId) {
-        switch (rolId) {
-            case 2:
-                cvUsers.setEnabled(false);
-                cvUsers.setElevation(0);
-                ivUsers.setImageAlpha(20);
-                tvUsers.setAlpha(0.2f);
-                cvPrinters.setEnabled(false);
-                cvPrinters.setElevation(0);
-                ivPrinters.setImageAlpha(20);
-                tvPrinters.setAlpha(0.2f);
-                break;
+    private void enableCardsRoles(Integer isAdmin) {
+        if (isAdmin == 0) {
+            cvUsers.setEnabled(false);
+            cvUsers.setElevation(0);
+            ivUsers.setImageAlpha(20);
+            tvUsers.setAlpha(0.2f);
+            cvPrinters.setEnabled(false);
+            cvPrinters.setElevation(0);
+            ivPrinters.setImageAlpha(20);
+            tvPrinters.setAlpha(0.2f);
         }
     }
 

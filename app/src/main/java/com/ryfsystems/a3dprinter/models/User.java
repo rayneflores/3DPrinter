@@ -18,10 +18,17 @@ public class User implements Serializable {
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Long uRole;
+    private Long uIsAdmin;
 
     @Override
     public String toString() {
-        return uName;
+        return "User{" +
+                "uId='" + uId + '\'' +
+                ", uName='" + uName + '\'' +
+                ", uPassword='" + uPassword + '\'' +
+                ", uEmail='" + uEmail + '\'' +
+                ", uPhone='" + uPhone + '\'' +
+                ", uIsAdmin=" + uIsAdmin +
+                '}';
     }
 }

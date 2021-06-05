@@ -1,7 +1,6 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -21,10 +20,9 @@ import com.ryfsystems.a3dprinter.utilities.PasswordUtils;
 public class RegisterUserActivity extends AppCompatActivity implements View.OnClickListener {
 
     EditText txtRegisterUserName, txtRegisterUserPassword, txtRegisterUserPasswordConfirm, txtRegisterUserEmail, txtRegisterUserPhone;
-    SQLiteDatabase db;
 
     /*Rol creado de Usuario Basico para los Usuarios Creados por la misma aplicacion*/
-    Long rolId = 2l;
+    Long isAdmin = 0L;
     String encryptedPassword = null;
 
     FirebaseAuth firebaseAuth;
@@ -68,7 +66,7 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                                         user.setUPassword(encryptedPassword.trim());
                                         user.setUEmail(txtRegisterUserEmail.getText().toString());
                                         user.setUPhone(txtRegisterUserPhone.getText().toString());
-                                        user.setURole(rolId);
+                                        user.setUIsAdmin(isAdmin);
                                         Toast.makeText(getApplicationContext(), "Cuenta de Usuario Creada", Toast.LENGTH_SHORT).show();
                                         DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
                                         documentReference.set(user);

@@ -32,9 +32,6 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
     UserAdapter userAdapter;
     ProgressDialog progressDialog;
 
-
-    User userSelected;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,16 +54,6 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
         initializeFirebase();
 
         listFbUsers();
-
-        /*rvUsers.setOnItemClickListener((parent, view, position, id) -> {
-            userSelected = (User) parent.getItemAtPosition(position);
-            Intent intent = new Intent(UsersActivity.this.getApplicationContext(), UserManagementActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("user", userSelected);
-            intent.putExtras(bundle);
-            UsersActivity.this.finish();
-            UsersActivity.this.startActivity(intent);
-        });*/
     }
 
     private void initializeFirebase() {
@@ -88,7 +75,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
                                 documentSnapshot.getString("upassword"),
                                 documentSnapshot.getString("uemail"),
                                 documentSnapshot.getString("uphone"),
-                                documentSnapshot.getLong("urole")
+                                documentSnapshot.getLong("uisadmin")
                         );
                         userFbList.add(user);
                     }

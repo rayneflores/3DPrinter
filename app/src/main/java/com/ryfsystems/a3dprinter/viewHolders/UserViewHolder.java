@@ -1,6 +1,7 @@
 package com.ryfsystems.a3dprinter.viewHolders;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,8 @@ import com.ryfsystems.a3dprinter.R;
 
 public class UserViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView txtListUserName, txtListUserEmail, txtListUserPhone;
+    public TextView txtListUserId, txtListUserName, txtListUserPassword, txtListUserEmail, txtListUserPhone, txtListUserRole;
+    public CheckBox chkListUserIsAdmin;
 
     View mView;
     private UserViewHolder.ClickListener mClickListener;
@@ -27,9 +29,12 @@ public class UserViewHolder extends RecyclerView.ViewHolder {
             return true;
         });
 
+        txtListUserId = itemView.findViewById(R.id.txtListUserId);
         txtListUserName = itemView.findViewById(R.id.txtListUserName);
+        txtListUserPassword = itemView.findViewById(R.id.txtListUserPassword);
         txtListUserEmail = itemView.findViewById(R.id.txtListUserEmail);
         txtListUserPhone = itemView.findViewById(R.id.txtListUserPhone);
+        chkListUserIsAdmin = itemView.findViewById(R.id.chkListUserIsAdmin);
     }
 
     public void setOnClickListener(UserViewHolder.ClickListener clickListener) {

@@ -12,10 +12,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements Serializable {
-    private Integer uId;
+    private String uId;
     private String uName;
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Long uRole;
+    private Long uIsAdmin;
 }
