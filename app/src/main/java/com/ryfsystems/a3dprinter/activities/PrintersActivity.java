@@ -1,77 +1,93 @@
 package com.ryfsystems.a3dprinter.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.adapters.PrinterAdapter;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-import com.ryfsystems.a3dprinter.entities.Printer;
+import com.ryfsystems.a3dprinter.models.Printer;
 
 import java.util.ArrayList;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_PRINTER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
+import java.util.List;
 
 public class PrintersActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnAddPrinter;
+    RecyclerView rvPrinters;
 
-    ArrayList<Printer> printerList;
-
-    ConexionSQLiteHelper conn;
+    List<Printer> printerFbList = new ArrayList<>();
+    RecyclerView.LayoutManager layoutManager;
+    FirebaseFirestore firebaseFirestore;
+    PrinterAdapter printerAdapter;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_printers);
 
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Espere...");
+        progressDialog.setMessage("Cargando Impresoras...");
+        progressDialog.setCanceledOnTouchOutside(false);
+
         btnAddPrinter = findViewById(R.id.btnAddPrinter);
         btnAddPrinter.setOnClickListener(this);
 
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, 1);
-
-        RecyclerView rvPrinters = findViewById(R.id.rvPrinters);
+        rvPrinters = findViewById(R.id.rvPrinters);
 
         rvPrinters.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         rvPrinters.setLayoutManager(layoutManager);
 
-        queryPrinterList();
+        initializeFirebase();
 
-        RecyclerView.Adapter mAdapter = new PrinterAdapter(printerList, this);
-        rvPrinters.setAdapter(mAdapter);
+        listFbPrinters();
 
     }
 
-    private void queryPrinterList() {
-
-        SQLiteDatabase db = conn.getReadableDatabase();
-
-        Printer printer;
-        printerList = new ArrayList<>();
-
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_PRINTER, null);
-
-        while (cursor.moveToNext()) {
-            printer = new Printer();
-            printer.setPId(cursor.getInt(0));
-            printer.setPName(cursor.getString(1));
-            printer.setPBrand(cursor.getString(2));
-            printer.setPModel(cursor.getString(3));
-            printer.setPImage(cursor.getString(4));
-
-            printerList.add(printer);
-        }
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
+
+    private void listFbPrinters() {
+        progressDialog.show();
+
+        firebaseFirestore.collection("Printer")
+                .get()
+                .addOnCompleteListener(task -> {
+                    progressDialog.dismiss();
+                    for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                        Printer printer = new Printer(
+                                documentSnapshot.getString("pid"),
+                                documentSnapshot.getString("pname"),
+                                documentSnapshot.getString("pbrand"),
+                                documentSnapshot.getString("pmodel"),
+                                documentSnapshot.getString("pimage")
+                        );
+                        printerFbList.add(printer);
+                    }
+                    printerAdapter = new PrinterAdapter(PrintersActivity.this, printerFbList);
+                    rvPrinters.setAdapter(printerAdapter);
+                })
+                .addOnFailureListener(e -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(PrintersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
+    }
+
 
     @Override
     public void onClick(View v) {

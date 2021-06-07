@@ -1,8 +1,9 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -23,7 +24,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     Button btnLogin;
     EditText txtLoginUserEmail, txtLoginPassword;
-    SQLiteDatabase db;
     TextView txtNewUser;
 
     String encryptedPassword;
@@ -103,11 +103,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseAuth.getCurrentUser().getUid());
                     documentReference.get()
                             .addOnSuccessListener(documentSnapshot -> {
+
+                                SharedPreferences sharedPreferences = getSharedPreferences("userPreferences", Context.MODE_PRIVATE);
+
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                editor.putInt("admin", Math.toIntExact((long) documentSnapshot.get("uadmin")));
+                                editor.putString("userName", documentSnapshot.getString("uname"));
+                                editor.apply();
+
                                 i = new Intent(getApplicationContext(), MainActivity.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putLong("isAdmin", (Long) documentSnapshot.get("uisadmin"));
-                                bundle.putString("userName", documentSnapshot.getString("uname"));
-                                i.putExtras(bundle);
+
+                                /*Bundle bundle = new Bundle();
+                                bundle.putLong("admin", (Long) documentSnapshot.get("uadmin"));
+                                bundle.putString();
+                                i.putExtras(bundle);*/
                                 progressDialog.dismiss();
                                 startActivity(i);
                                 finish();

@@ -17,5 +17,5 @@ public class User implements Serializable {
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Long uIsAdmin;
+    private Long uAdmin;
 }

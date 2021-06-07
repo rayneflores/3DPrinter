@@ -27,7 +27,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     EditText txtUserName, txtUserPassword, txtUserPasswordConfirm, txtUserEmail, txtUserPhone;
     TextView lblTitle;
 
-    Long isAdmin = null;
+    Boolean isAdmin;
     String userId = null;
 
     String encryptedPassword;
@@ -67,7 +67,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
             userReceived = (User) received.getSerializable("user");
 
-            isAdmin = userReceived.getUIsAdmin();
+            isAdmin = userReceived.getUAdmin() == 1;
+
 
             try {
                 decryptedPassword = PasswordUtils.decrypt(userReceived.getUPassword(), PasswordUtils.SALT);
@@ -75,15 +76,13 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                 e.printStackTrace();
             }
 
-            Toast.makeText(this, "Getted: " + isAdmin, Toast.LENGTH_LONG).show();
-
             userId = userReceived.getUId();
             txtUserName.setText(userReceived.getUName());
             txtUserPassword.setText(decryptedPassword.trim());
             txtUserPasswordConfirm.setText(decryptedPassword.trim());
             txtUserEmail.setText(userReceived.getUEmail());
             txtUserPhone.setText(userReceived.getUPhone());
-            chkAdmin.setChecked(isAdmin == 1);
+            chkAdmin.setChecked(isAdmin);
         }
     }
 
@@ -123,12 +122,17 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                     user.setUPassword(encryptedPassword.trim());
                                     user.setUEmail(txtUserEmail.getText().toString());
                                     user.setUPhone(txtUserPhone.getText().toString());
-                                    user.setUIsAdmin(isAdmin);
+                                    if (chkAdmin.isChecked()) {
+                                        user.setUAdmin(1L);
+                                    } else {
+                                        user.setUAdmin(0L);
+                                    }
                                     DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
                                     documentReference.set(user);
 
                                     Toast.makeText(getApplicationContext(), "Usuario Registrado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-                                    startActivity(new Intent(getApplicationContext(), UsersActivity.class));
+                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(i);
                                     finish();
                                 })
                                 .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario. Additional data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
@@ -157,15 +161,16 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         return txtUserPassword.getText().toString().equals(txtUserPasswordConfirm.getText().toString());
     }
 
-    private void updateUser(String userId, String name, String password, String email, String phone, Long isAdmin) {
+    private void updateUser(String id, String name, String password, String email, String phone, Long admin) {
 
-        User user = new User(userId, name, password, email, phone, isAdmin);
+        User user = new User(id, name, password, email, phone, admin);
 
         DocumentReference documentReference = firebaseFirestore.collection("User").document(user.getUId());
         documentReference.set(user);
 
         Toast.makeText(getApplicationContext(), "Usuario Actualizado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(i);
         finish();
     }
 }

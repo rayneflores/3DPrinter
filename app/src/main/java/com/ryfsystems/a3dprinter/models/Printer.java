@@ -1,4 +1,4 @@
-package com.ryfsystems.a3dprinter.entities;
+package com.ryfsystems.a3dprinter.models;
 
 import java.io.Serializable;
 
@@ -17,4 +17,15 @@ public class Printer implements Serializable {
     private String pBrand;
     private String pModel;
     private String pImage;
+
+    @Override
+    public String toString() {
+        return "Printer{" +
+                "pId=" + pId +
+                ", pName='" + pName + '\'' +
+                ", pBrand='" + pBrand + '\'' +
+                ", pModel='" + pModel + '\'' +
+                ", pImage='" + pImage + '\'' +
+                '}';
+    }
 }

@@ -21,8 +21,6 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
 
     EditText txtRegisterUserName, txtRegisterUserPassword, txtRegisterUserPasswordConfirm, txtRegisterUserEmail, txtRegisterUserPhone;
 
-    /*Rol creado de Usuario Basico para los Usuarios Creados por la misma aplicacion*/
-    Long isAdmin = 0L;
     String encryptedPassword = null;
 
     FirebaseAuth firebaseAuth;
@@ -66,14 +64,17 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                                         user.setUPassword(encryptedPassword.trim());
                                         user.setUEmail(txtRegisterUserEmail.getText().toString());
                                         user.setUPhone(txtRegisterUserPhone.getText().toString());
-                                        user.setUIsAdmin(isAdmin);
-                                        Toast.makeText(getApplicationContext(), "Cuenta de Usuario Creada", Toast.LENGTH_SHORT).show();
+                                        user.setUAdmin(0L);
                                         DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
+
+                                        System.out.println("User Data: " + user.toString());
+
                                         documentReference.set(user);
+                                        Toast.makeText(getApplicationContext(), "Cuenta de Usuario Creada", Toast.LENGTH_SHORT).show();
                                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                         finish();
                                     })
-                                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario", Toast.LENGTH_SHORT).show());
+                                    .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos del Usuario. Additional Data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

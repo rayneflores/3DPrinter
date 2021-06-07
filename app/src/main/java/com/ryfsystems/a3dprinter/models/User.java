@@ -18,7 +18,7 @@ public class User implements Serializable {
     private String uPassword;
     private String uEmail;
     private String uPhone;
-    private Long uIsAdmin;
+    private Long uAdmin;
 
     @Override
     public String toString() {
@@ -28,7 +28,7 @@ public class User implements Serializable {
                 ", uPassword='" + uPassword + '\'' +
                 ", uEmail='" + uEmail + '\'' +
                 ", uPhone='" + uPhone + '\'' +
-                ", uIsAdmin=" + uIsAdmin +
+                ", uAdmin=" + uAdmin +
                 '}';
     }
 }

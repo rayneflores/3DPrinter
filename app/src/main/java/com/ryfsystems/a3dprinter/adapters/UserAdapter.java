@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,7 +48,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
                         userList.get(position).getUPassword(),
                         userList.get(position).getUEmail(),
                         userList.get(position).getUPhone(),
-                        userList.get(position).getUIsAdmin()
+                        userList.get(position).getUAdmin()
                 );
 
                 Bundle bundle = new Bundle();
@@ -58,10 +57,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
                 intent.putExtras(bundle);
                 usersActivity.startActivity(intent);
                 usersActivity.finish();
-
-                /*Toast.makeText(usersActivity,
-                        "Data: " + userList.get(position).getUIsAdmin(),
-                        Toast.LENGTH_SHORT).show();*/
             }
 
             @Override
@@ -75,20 +70,13 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder viewHolder, int i) {
-        boolean checked = false;
-        try {
-            checked = userList.get(i).getUIsAdmin() == 1L;
-        } catch (Exception e) {
-            Toast.makeText(usersActivity, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
 
         viewHolder.txtListUserId.setText(userList.get(i).getUId());
         viewHolder.txtListUserName.setText(userList.get(i).getUName());
         viewHolder.txtListUserPassword.setText(userList.get(i).getUPassword());
         viewHolder.txtListUserEmail.setText("Email: " + userList.get(i).getUEmail());
         viewHolder.txtListUserPhone.setText("Telefono: " + userList.get(i).getUPhone());
-        viewHolder.chkListUserIsAdmin.setChecked(checked);
+        viewHolder.chkListUserIsAdmin.setChecked(userList.get(i).getUAdmin() == 1L);
     }
 
     @Override

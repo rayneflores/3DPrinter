@@ -1,37 +1,33 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_P_BRAND;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_P_ID;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_P_IMAGE;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_P_MODEL;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.FIELD_P_NAME;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.TABLE_PRINTER;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbVersion;
+import com.ryfsystems.a3dprinter.models.Printer;
 
 public class PrinterManagementActivity extends AppCompatActivity implements View.OnClickListener {
 
     Bundle received;
     Button btnPrinterRegister;
-    ConexionSQLiteHelper conn;
     EditText txtPrinterName, txtPrinterBrand, txtPrinterModel, txtPrinterUrlPhoto;
+    TextView lblTitle;
 
-    Integer printerId = null;
+    String printerId = null;
 
-    SQLiteDatabase db;
+    FirebaseFirestore firebaseFirestore;
+
+    Printer printerReceived;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +39,49 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
         txtPrinterBrand = findViewById(R.id.txtPrinterBrand);
         txtPrinterModel = findViewById(R.id.txtPrinterModel);
         txtPrinterUrlPhoto = findViewById(R.id.txtPrinterUrlPhoto);
+        lblTitle = findViewById(R.id.lblPrinterManagementTitle);
 
-        conn = new ConexionSQLiteHelper(getApplicationContext(), dbName, null, dbVersion);
+        initializeFirebase();
+
+        received = getIntent().getExtras();
+
+        if (received != null) {
+            lblTitle.setText("Actualizacion de Impresora");
+            btnPrinterRegister.setText("Actualizar");
+
+            printerReceived = (Printer) received.getSerializable("printer");
+
+            printerId = printerReceived.getPId();
+            txtPrinterName.setText(printerReceived.getPName());
+            txtPrinterBrand.setText(printerReceived.getPBrand());
+            txtPrinterModel.setText(printerReceived.getPModel());
+            txtPrinterUrlPhoto.setText(printerReceived.getPImage());
+        }
+    }
+
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
     public void onClick(View v) {
         if (allFilled()) {
             if (received != null) {
-                updatePrinter();
+                updatePrinter(
+                        printerId,
+                        txtPrinterName.getText().toString(),
+                        txtPrinterBrand.getText().toString(),
+                        txtPrinterModel.getText().toString(),
+                        txtPrinterUrlPhoto.getText().toString()
+                );
             } else {
-                createPrinter();
+                createPrinter(
+                        txtPrinterName.getText().toString(),
+                        txtPrinterBrand.getText().toString(),
+                        txtPrinterModel.getText().toString(),
+                        txtPrinterUrlPhoto.getText().toString()
+                );
             }
         } else {
             Toast.makeText(getApplicationContext(), "Debe llenar todos los Campos", Toast.LENGTH_SHORT).show();
@@ -61,24 +89,25 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
 
     }
 
-    private void createPrinter() {
-        db = conn.getWritableDatabase();
+    private void createPrinter(String name, String brand, String model, String image) {
 
-        String insert = "INSERT INTO " +
-                TABLE_PRINTER + " (" +
-                FIELD_P_NAME + ", " +
-                FIELD_P_BRAND + ", " +
-                FIELD_P_MODEL + ", " +
-                FIELD_P_IMAGE + ") VALUES ('" +
-                txtPrinterName.getText().toString() + "', '" +
-                txtPrinterBrand.getText().toString() + "', '" +
-                txtPrinterModel.getText().toString() + "', '" +
-                txtPrinterUrlPhoto.getText().toString() + "')";
-        db.execSQL(insert);
-        Toast.makeText(getApplicationContext(), "Impresora Registrada Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        db.close();
-        finish();
-        startActivity(new Intent(getApplicationContext(), PrintersActivity.class));
+        Printer printer = new Printer();
+        printer.setPName(name);
+        printer.setPBrand(brand);
+        printer.setPModel(model);
+        printer.setPImage(image);
+
+        DocumentReference creationReference = firebaseFirestore.collection("Printer").document();
+        printer.setPId(creationReference.getId());
+
+        firebaseFirestore.collection("Printer")
+                .add(printer)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(getApplicationContext(), "Impresora Registrada Satisfactoriamente", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(getApplicationContext(), PrintersActivity.class));
+                    finish();
+                })
+                .addOnFailureListener(e -> Toast.makeText(getApplicationContext(), "No se pudieron registrar los datos de la Impresora. Additional data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     private boolean allFilled() {
@@ -89,20 +118,15 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
                         !txtPrinterUrlPhoto.getText().toString().trim().equalsIgnoreCase("");
     }
 
-    private void updatePrinter() {
-        db = conn.getWritableDatabase();
+    private void updatePrinter(String id, String name, String brand, String model, String image) {
 
-        String update = "UPDATE " +
-                TABLE_PRINTER + " SET " +
-                FIELD_P_NAME + "='" + txtPrinterName.getText().toString() + "='" +
-                FIELD_P_BRAND + "='" + txtPrinterBrand.getText().toString() + "='" +
-                FIELD_P_MODEL + "='" + txtPrinterModel.getText().toString() + "='" +
-                FIELD_P_IMAGE + "='" + txtPrinterUrlPhoto.getText().toString() + "' WHERE " +
-                FIELD_P_ID + " = " + printerId;
-        db.execSQL(update);
+        Printer printer = new Printer(id, name, brand, model, image);
+
+        DocumentReference documentReference = firebaseFirestore.collection("Printer").document(printer.getPId());
+        documentReference.set(printer);
+
         Toast.makeText(getApplicationContext(), "Impresora Actualizada Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        db.close();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
         finish();
-        startActivity(new Intent(getApplicationContext(), PrintersActivity.class));
     }
 }

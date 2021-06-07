@@ -75,7 +75,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
                                 documentSnapshot.getString("upassword"),
                                 documentSnapshot.getString("uemail"),
                                 documentSnapshot.getString("uphone"),
-                                documentSnapshot.getLong("uisadmin")
+                                documentSnapshot.getLong("uadmin")
                         );
                         userFbList.add(user);
                     }
@@ -91,12 +91,10 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         Intent i;
-        switch (v.getId()) {
-            case R.id.btnAddUser:
-                i = new Intent(getApplicationContext(), UserManagementActivity.class);
-                finish();
-                startActivity(i);
-                break;
+        if (v.getId() == R.id.btnAddUser) {
+            i = new Intent(getApplicationContext(), UserManagementActivity.class);
+            startActivity(i);
+            finish();
         }
     }
 }

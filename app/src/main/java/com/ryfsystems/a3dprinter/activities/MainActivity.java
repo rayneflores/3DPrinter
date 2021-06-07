@@ -1,6 +1,7 @@
 package com.ryfsystems.a3dprinter.activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,35 +12,32 @@ import androidx.cardview.widget.CardView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.ryfsystems.a3dprinter.R;
-import com.ryfsystems.a3dprinter.db.ConexionSQLiteHelper;
-
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbName;
-import static com.ryfsystems.a3dprinter.utilities.Utilities.dbVersion;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Bundle received;
     CardView cvUsers, cvPrinters, cvServiceOrder, cvLogout;
     ImageView ivUsers, ivPrinters;
     TextView tvUsers, tvPrinters, tvLoggedAs;
 
-    Long isAdmin;
+    Boolean isAdmin;
     String userName;
 
     Intent i;
+
+    int loggedAsAdmin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new ConexionSQLiteHelper(getApplicationContext(), dbName, null, dbVersion);
 
-        received = getIntent().getExtras();
+        SharedPreferences sh = getSharedPreferences("userPreferences", MODE_PRIVATE);
 
-        if (received != null) {
-            isAdmin = received.getLong("isAdmin");
-            userName = received.getString("userName");
-        }
+        //Toast.makeText(this, sh.getInt("admin", 0), Toast.LENGTH_LONG).show();
+
+        //loggedAsAdmin = userLogged.getInt("admin", 0);
+        isAdmin = sh.getInt("admin", 0) == 1;
+        userName = sh.getString("userName", "");
 
 
         cvUsers = findViewById(R.id.cvUsers);
@@ -61,11 +59,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         tvLoggedAs.setText("Usuario: " + userName);
 
-        enableCardsRoles(Math.toIntExact(isAdmin));
+        enableCardsRoles(isAdmin);
     }
 
-    private void enableCardsRoles(Integer isAdmin) {
-        if (isAdmin == 0) {
+    private void enableCardsRoles(Boolean isAdmin) {
+        if (!isAdmin) {
             cvUsers.setEnabled(false);
             cvUsers.setElevation(0);
             ivUsers.setImageAlpha(20);
