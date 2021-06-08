@@ -35,4 +35,6 @@
     <string name="actualizar_impresora">Actualizacion de Impresora</string>
     <string name="actualizar">Actualizar</string>
     <string name="actualizar_usuario">Actualizacion de Usuario</string>
+    <string name="lista_de_ordenes">Ordenes Creadas</string>
+    <string name="nueva_orden">Nueva Orden</string>
 </resources>

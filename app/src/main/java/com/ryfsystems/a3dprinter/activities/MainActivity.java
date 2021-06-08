@@ -24,8 +24,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Intent i;
 
-    int loggedAsAdmin;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +78,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.cvPrinters:
                 i = new Intent(getApplicationContext(), PrintersActivity.class);
+                startActivity(i);
+                break;
+            case R.id.cvServiceOrders:
+                i = new Intent(getApplicationContext(), ServiceOrdersActivity.class);
                 startActivity(i);
                 break;
             case R.id.cvLogout:

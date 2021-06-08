@@ -110,14 +110,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 editor.putInt("admin", Math.toIntExact((long) documentSnapshot.get("uadmin")));
                                 editor.putString("userName", documentSnapshot.getString("uname"));
+                                editor.putString("userId", documentSnapshot.getString("uid"));
                                 editor.apply();
 
                                 i = new Intent(getApplicationContext(), MainActivity.class);
 
-                                /*Bundle bundle = new Bundle();
-                                bundle.putLong("admin", (Long) documentSnapshot.get("uadmin"));
-                                bundle.putString();
-                                i.putExtras(bundle);*/
                                 progressDialog.dismiss();
                                 startActivity(i);
                                 finish();
@@ -133,7 +130,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 });
     }
 
-    /*@Override
+    @Override
     protected void onStart() {
         super.onStart();
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -142,16 +139,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     .addOnSuccessListener(documentSnapshot -> {
                         Intent intent;
                         intent = new Intent(getApplicationContext(), MainActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putLong("isAdmin", (Long) documentSnapshot.get("uisadmin"));
-                        bundle.putString("userName", documentSnapshot.getString("uname"));
-                        intent.putExtras(bundle);
                         progressDialog.dismiss();
                         startActivity(intent);
                         finish();
                     });
         }
-    }*/
+    }
 
     @Override
     public void onBackPressed() {

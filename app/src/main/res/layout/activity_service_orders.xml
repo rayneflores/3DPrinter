@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ServiceOrdersActivity">
+
+    <TextView
+        android:id="@+id/tvOrdersListTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="@string/lista_de_ordenes"
+        android:textAlignment="center"
+        android:textColor="@color/iconsColor"
+        android:textSize="18sp"
+        android:textStyle="bold|italic" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnAddOrder"
+        android:layout_below="@+id/tvOrdersListTitle"
+        android:layout_margin="16dp"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOrders"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnAddOrder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="19dp"
+        android:backgroundTint="@color/colorGris"
+        android:drawableLeft="@drawable/orders"
+        android:text="@string/nueva_orden"
+        android:textAllCaps="false"
+        android:textColor="@color/iconsColor"
+        android:textSize="16sp" />
+
+</RelativeLayout>
