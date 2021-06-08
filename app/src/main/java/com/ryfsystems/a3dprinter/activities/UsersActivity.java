@@ -65,6 +65,7 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
         progressDialog.show();
 
         firebaseFirestore.collection("User")
+                .orderBy("uname")
                 .get()
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();

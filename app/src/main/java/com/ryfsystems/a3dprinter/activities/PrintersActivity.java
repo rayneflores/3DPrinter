@@ -66,6 +66,7 @@ public class PrintersActivity extends AppCompatActivity implements View.OnClickL
         progressDialog.show();
 
         firebaseFirestore.collection("Printer")
+                .orderBy("pname")
                 .get()
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();

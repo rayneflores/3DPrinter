@@ -20,7 +20,9 @@ import com.ryfsystems.a3dprinter.adapters.ServiceOrderAdapter;
 import com.ryfsystems.a3dprinter.models.ServiceOrder;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceOrdersActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -28,11 +30,13 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
     RecyclerView rvOrders;
 
     List<ServiceOrder> serviceOrderFbList = new ArrayList<>();
+    Map<String, String> orderMap = new HashMap<>();
     FirebaseFirestore firebaseFirestore;
 
     ServiceOrderAdapter serviceOrderAdapter;
 
     String userId;
+    Boolean isAdmin;
 
     ProgressDialog progressDialog;
 
@@ -44,6 +48,7 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
         SharedPreferences sh = getSharedPreferences("userPreferences", MODE_PRIVATE);
 
         userId = sh.getString("userId", "");
+        isAdmin = sh.getInt("admin", 0) == 1;
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("Espere...");
@@ -59,37 +64,65 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
 
         initializeFirebase();
 
-        listFbServiceOrders();
+        listFbServiceOrders(isAdmin);
 
     }
 
-    private void listFbServiceOrders() {
+    private void listFbServiceOrders(Boolean isAdmin) {
         progressDialog.show();
 
-        firebaseFirestore.collection("ServiceOrder")
-                .whereEqualTo("uid", userId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    progressDialog.dismiss();
-                    if (task.isSuccessful()) {
-                        for (DocumentSnapshot documentSnapshot : task.getResult()) {
-                            ServiceOrder serviceOrder = new ServiceOrder(
-                                    documentSnapshot.getString("oid"),
-                                    documentSnapshot.getString("uid"),
-                                    documentSnapshot.getString("pid"),
-                                    documentSnapshot.getString("pserial"),
-                                    documentSnapshot.getDate("odate")
-                            );
-                            serviceOrderFbList.add(serviceOrder);
+        if (isAdmin) {
+            firebaseFirestore.collection("ServiceOrder")
+                    .orderBy("odate")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                ServiceOrder serviceOrder = new ServiceOrder(
+                                        documentSnapshot.getString("oid"),
+                                        documentSnapshot.getString("uid"),
+                                        documentSnapshot.getString("pid"),
+                                        documentSnapshot.getString("pserial"),
+                                        documentSnapshot.getDate("odate")
+                                );
+                                serviceOrderFbList.add(serviceOrder);
+                            }
                         }
-                    }
-                    serviceOrderAdapter = new ServiceOrderAdapter(ServiceOrdersActivity.this, serviceOrderFbList);
-                    rvOrders.setAdapter(serviceOrderAdapter);
-                })
-                .addOnFailureListener(e -> {
-                    progressDialog.dismiss();
-                    Toast.makeText(ServiceOrdersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                });
+                        serviceOrderAdapter = new ServiceOrderAdapter(ServiceOrdersActivity.this, serviceOrderFbList);
+                        rvOrders.setAdapter(serviceOrderAdapter);
+                    })
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(ServiceOrdersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        } else {
+            firebaseFirestore.collection("ServiceOrder")
+                    .orderBy("odate")
+                    .whereEqualTo("uid", userId)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        progressDialog.dismiss();
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                ServiceOrder serviceOrder = new ServiceOrder(
+                                        documentSnapshot.getString("oid"),
+                                        documentSnapshot.getString("uid"),
+                                        documentSnapshot.getString("pid"),
+                                        documentSnapshot.getString("pserial"),
+                                        documentSnapshot.getDate("odate")
+                                );
+                                serviceOrderFbList.add(serviceOrder);
+                            }
+                        }
+                        serviceOrderAdapter = new ServiceOrderAdapter(ServiceOrdersActivity.this, serviceOrderFbList);
+                        rvOrders.setAdapter(serviceOrderAdapter);
+                    })
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(ServiceOrdersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    });
+        }
     }
 
     private void initializeFirebase() {
