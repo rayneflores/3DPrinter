@@ -91,17 +91,17 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
 
     private void createPrinter(String name, String brand, String model, String image) {
 
+        DocumentReference creationReference = firebaseFirestore.collection("Printer").document();
+
         Printer printer = new Printer();
+        printer.setPId(creationReference.getId());
         printer.setPName(name);
         printer.setPBrand(brand);
         printer.setPModel(model);
         printer.setPImage(image);
 
-        DocumentReference creationReference = firebaseFirestore.collection("Printer").document();
-        printer.setPId(creationReference.getId());
-
-        firebaseFirestore.collection("Printer")
-                .add(printer)
+        firebaseFirestore.collection("Printer").document(creationReference.getId())
+                .set(printer)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(getApplicationContext(), "Impresora Registrada Satisfactoriamente", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(getApplicationContext(), PrintersActivity.class));
