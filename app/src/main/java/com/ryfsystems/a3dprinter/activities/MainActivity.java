@@ -33,12 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences sh = getSharedPreferences("userPreferences", MODE_PRIVATE);
 
-        //Toast.makeText(this, sh.getInt("admin", 0), Toast.LENGTH_LONG).show();
-
-        //loggedAsAdmin = userLogged.getInt("admin", 0);
         isAdmin = sh.getInt("admin", 0) == 1;
         userName = sh.getString("userName", "");
-
 
         cvUsers = findViewById(R.id.cvUsers);
         cvPrinters = findViewById(R.id.cvPrinters);

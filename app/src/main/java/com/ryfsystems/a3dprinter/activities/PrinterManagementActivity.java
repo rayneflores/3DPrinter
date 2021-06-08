@@ -46,8 +46,8 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
         received = getIntent().getExtras();
 
         if (received != null) {
-            lblTitle.setText("Actualizacion de Impresora");
-            btnPrinterRegister.setText("Actualizar");
+            lblTitle.setText(R.string.actualizar_impresora);
+            btnPrinterRegister.setText(R.string.actualizar);
 
             printerReceived = (Printer) received.getSerializable("printer");
 

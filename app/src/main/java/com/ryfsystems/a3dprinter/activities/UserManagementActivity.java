@@ -62,8 +62,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
 
         if (received != null) {
 
-            lblTitle.setText("Actualizacion de Usuario");
-            btnRegistrar.setText("Actualizar");
+            lblTitle.setText(R.string.actualizar_usuario);
+            btnRegistrar.setText(R.string.actualizar);
 
             userReceived = (User) received.getSerializable("user");
 

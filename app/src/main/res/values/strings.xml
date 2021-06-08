@@ -32,4 +32,7 @@
     <string name="salir">Salir</string>
     <string name="orden_de_servicio">Orden de Servicio</string>
     <string name="administrador">Administrador?</string>
+    <string name="actualizar_impresora">Actualizacion de Impresora</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="actualizar_usuario">Actualizacion de Usuario</string>
 </resources>
