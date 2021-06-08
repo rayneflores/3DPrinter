@@ -1,6 +1,7 @@
 package com.ryfsystems.a3dprinter.models;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +19,5 @@ public class ServiceOrder implements Serializable {
     private String uId;
     private String pId;
     private String pSerial;
-    private String oDate;
+    private Date oDate;
 }

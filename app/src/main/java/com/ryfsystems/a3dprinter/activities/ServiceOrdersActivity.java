@@ -16,6 +16,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.ryfsystems.a3dprinter.R;
+import com.ryfsystems.a3dprinter.adapters.ServiceOrderAdapter;
 import com.ryfsystems.a3dprinter.models.ServiceOrder;
 
 import java.util.ArrayList;
@@ -28,6 +29,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
 
     List<ServiceOrder> serviceOrderFbList = new ArrayList<>();
     FirebaseFirestore firebaseFirestore;
+
+    ServiceOrderAdapter serviceOrderAdapter;
 
     String userId;
 
@@ -63,24 +66,25 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
     private void listFbServiceOrders() {
         progressDialog.show();
 
-        firebaseFirestore.collection("Order")
-                .whereEqualTo("uId", userId)
+        firebaseFirestore.collection("ServiceOrder")
+                .whereEqualTo("uid", userId)
                 .get()
                 .addOnCompleteListener(task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
                         for (DocumentSnapshot documentSnapshot : task.getResult()) {
                             ServiceOrder serviceOrder = new ServiceOrder(
-                                    documentSnapshot.getString("oId"),
-                                    documentSnapshot.getString("uId"),
-                                    documentSnapshot.getString("pId"),
-                                    documentSnapshot.getString("pSerial"),
-                                    documentSnapshot.getString("oDate")
+                                    documentSnapshot.getString("oid"),
+                                    documentSnapshot.getString("uid"),
+                                    documentSnapshot.getString("pid"),
+                                    documentSnapshot.getString("pserial"),
+                                    documentSnapshot.getDate("odate")
                             );
                             serviceOrderFbList.add(serviceOrder);
                         }
                     }
-                    /*rvOrders.setAdapter(serviceOrderAdapter);*/
+                    serviceOrderAdapter = new ServiceOrderAdapter(ServiceOrdersActivity.this, serviceOrderFbList);
+                    rvOrders.setAdapter(serviceOrderAdapter);
                 })
                 .addOnFailureListener(e -> {
                     progressDialog.dismiss();

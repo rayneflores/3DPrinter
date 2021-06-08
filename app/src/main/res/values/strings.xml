@@ -37,4 +37,6 @@
     <string name="actualizar_usuario">Actualizacion de Usuario</string>
     <string name="lista_de_ordenes">Ordenes Creadas</string>
     <string name="nueva_orden">Nueva Orden</string>
+    <string name="actualizar_orden">Actualizar Orden</string>
+    <string name="registrar_orden">Registrar Orden</string>
 </resources>
