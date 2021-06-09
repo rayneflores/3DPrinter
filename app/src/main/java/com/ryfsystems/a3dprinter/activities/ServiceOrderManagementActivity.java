@@ -25,7 +25,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     Bundle received;
     Button btnRegisterOrder;
 
-    TextView txtOrderPrinterSerial, txtOrderDate, lblServiceOrderManagementTitle;
+    TextView txtOrderId, txtOrderPrinterSerial, txtOrderDate, lblServiceOrderManagementTitle;
 
     FirebaseFirestore firebaseFirestore;
 
@@ -44,6 +44,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         userId = sh.getString("userId", "");
         userName = sh.getString("userName", "");
 
+        txtOrderId = findViewById(R.id.txtOrderId);
         txtOrderPrinterSerial = findViewById(R.id.txtOrderPrinterSerial);
         txtOrderDate = findViewById(R.id.txtOrderDate);
         txtOrderDate.setText(new Date().toString());
@@ -61,6 +62,9 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
             btnRegisterOrder.setText(R.string.actualizar);
 
             serviceOrderReceived = (ServiceOrder) received.getSerializable("serviceOrder");
+
+            txtOrderId.setText(serviceOrderReceived.getOId());
+            txtOrderPrinterSerial.setText(serviceOrderReceived.getPSerial());
         }
     }
 

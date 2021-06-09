@@ -6,6 +6,11 @@
     android:orientation="vertical"
     tools:context=".activities.ServiceOrderManagementActivity">
 
+    <EditText
+        android:id="@+id/txtOrderId"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+
     <TextView
         android:id="@+id/lblServiceOrderManagementTitle"
         android:layout_width="match_parent"
@@ -40,7 +45,7 @@
                 android:background="@color/white"
                 android:hint="Serial"
                 android:inputType="text"
-                android:textSize="16sp" />
+                android:textSize="@dimen/fontLarge" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -57,7 +62,7 @@
                 android:enabled="false"
                 android:hint="Fecha"
                 android:inputType="text"
-                android:textSize="16sp" />
+                android:textSize="@dimen/fontLarge" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
