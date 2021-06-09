@@ -10,7 +10,7 @@ import com.ryfsystems.a3dprinter.R;
 
 public class ServiceOrderViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView txtListOrderId, txtListOrderUser, txtListOrderPrinterName, txtListOrderPrinterSerial, txtListOrderDate;
+    public TextView txtListOrderId, txtListOrderUserName, txtListOrderPrinterName, txtListOrderPrinterSerial, txtListOrderDate;
 
     View mView;
     private ServiceOrderViewHolder.ClickListener mClickListener;
@@ -27,7 +27,7 @@ public class ServiceOrderViewHolder extends RecyclerView.ViewHolder {
         });
 
         txtListOrderId = itemView.findViewById(R.id.txtListOrderId);
-        txtListOrderUser = itemView.findViewById(R.id.txtListOrderUser);
+        txtListOrderUserName = itemView.findViewById(R.id.txtListOrderUserName);
         txtListOrderPrinterName = itemView.findViewById(R.id.txtListOrderPrinterName);
         txtListOrderPrinterSerial = itemView.findViewById(R.id.txtListOrderPrinterSerial);
         txtListOrderDate = itemView.findViewById(R.id.txtListOrderDate);

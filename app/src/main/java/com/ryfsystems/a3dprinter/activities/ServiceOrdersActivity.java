@@ -20,9 +20,7 @@ import com.ryfsystems.a3dprinter.adapters.ServiceOrderAdapter;
 import com.ryfsystems.a3dprinter.models.ServiceOrder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ServiceOrdersActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,13 +28,13 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
     RecyclerView rvOrders;
 
     List<ServiceOrder> serviceOrderFbList = new ArrayList<>();
-    Map<String, String> orderMap = new HashMap<>();
     FirebaseFirestore firebaseFirestore;
 
     ServiceOrderAdapter serviceOrderAdapter;
 
     String userId;
     Boolean isAdmin;
+    String userName;
 
     ProgressDialog progressDialog;
 
@@ -48,6 +46,7 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
         SharedPreferences sh = getSharedPreferences("userPreferences", MODE_PRIVATE);
 
         userId = sh.getString("userId", "");
+        userName = sh.getString("userName", "");
         isAdmin = sh.getInt("admin", 0) == 1;
 
         progressDialog = new ProgressDialog(this);
@@ -81,8 +80,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
                                 ServiceOrder serviceOrder = new ServiceOrder(
                                         documentSnapshot.getString("oid"),
-                                        documentSnapshot.getString("uid"),
-                                        documentSnapshot.getString("pid"),
+                                        documentSnapshot.getString("uname"),
+                                        documentSnapshot.getString("pname"),
                                         documentSnapshot.getString("pserial"),
                                         documentSnapshot.getDate("odate")
                                 );
@@ -99,7 +98,7 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
         } else {
             firebaseFirestore.collection("ServiceOrder")
                     .orderBy("odate")
-                    .whereEqualTo("uid", userId)
+                    .whereEqualTo("uName", userName)
                     .get()
                     .addOnCompleteListener(task -> {
                         progressDialog.dismiss();
@@ -107,8 +106,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                             for (DocumentSnapshot documentSnapshot : task.getResult()) {
                                 ServiceOrder serviceOrder = new ServiceOrder(
                                         documentSnapshot.getString("oid"),
-                                        documentSnapshot.getString("uid"),
-                                        documentSnapshot.getString("pid"),
+                                        documentSnapshot.getString("uname"),
+                                        documentSnapshot.getString("pname"),
                                         documentSnapshot.getString("pserial"),
                                         documentSnapshot.getDate("odate")
                                 );

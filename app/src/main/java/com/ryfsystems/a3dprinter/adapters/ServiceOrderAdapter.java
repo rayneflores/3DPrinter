@@ -47,8 +47,8 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderViewHo
             public void onItemClick(View view, int position) {
                 serviceOrderSelected = new ServiceOrder(
                         serviceOrderList.get(position).getOId(),
-                        serviceOrderList.get(position).getUId(),
-                        serviceOrderList.get(position).getPId(),
+                        serviceOrderList.get(position).getUName(),
+                        serviceOrderList.get(position).getPName(),
                         serviceOrderList.get(position).getPSerial(),
                         serviceOrderList.get(position).getODate()
                 );
@@ -74,17 +74,17 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderViewHo
     public void onBindViewHolder(@NonNull ServiceOrderViewHolder viewHolder, int i) {
 
         viewHolder.txtListOrderId.setText("Orden: " + serviceOrderList.get(i).getOId());
-        SpannableString userId = new SpannableString("Id de Usuario: " + serviceOrderList.get(i).getUId());
-        userId.setSpan(new StyleSpan(Typeface.BOLD), 0, 13, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        viewHolder.txtListOrderUser.setText(userId);
-        SpannableString printerId = new SpannableString("Id de Impresora: " + serviceOrderList.get(i).getPId());
-        printerId.setSpan(new StyleSpan(Typeface.BOLD), 0, 15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString userId = new SpannableString("Usuario: " + serviceOrderList.get(i).getUName());
+        userId.setSpan(new StyleSpan(Typeface.BOLD), 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        viewHolder.txtListOrderUserName.setText(userId);
+        SpannableString printerId = new SpannableString("Impresora: " + serviceOrderList.get(i).getPName());
+        printerId.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.txtListOrderPrinterName.setText(printerId);
-        SpannableString printerSerial = new SpannableString("Serial de Impresora: " + serviceOrderList.get(i).getPSerial());
-        printerSerial.setSpan(new StyleSpan(Typeface.BOLD), 0, 19, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString printerSerial = new SpannableString("Serial: " + serviceOrderList.get(i).getPSerial());
+        printerSerial.setSpan(new StyleSpan(Typeface.BOLD), 0, 6, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.txtListOrderPrinterSerial.setText(printerSerial);
-        SpannableString orderDate = new SpannableString("Fecha de la Orden: " + serviceOrderList.get(i).getODate().toString());
-        orderDate.setSpan(new StyleSpan(Typeface.BOLD), 0, 17, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        SpannableString orderDate = new SpannableString("Fecha: " + serviceOrderList.get(i).getODate().toString());
+        orderDate.setSpan(new StyleSpan(Typeface.BOLD), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.txtListOrderDate.setText(orderDate);
     }
 

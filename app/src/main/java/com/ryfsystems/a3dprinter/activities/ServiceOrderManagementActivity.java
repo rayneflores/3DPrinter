@@ -32,6 +32,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     ServiceOrder serviceOrderReceived;
 
     String userId;
+    String userName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         SharedPreferences sh = getSharedPreferences("userPreferences", MODE_PRIVATE);
 
         userId = sh.getString("userId", "");
+        userName = sh.getString("userName", "");
 
         txtOrderPrinterSerial = findViewById(R.id.txtOrderPrinterSerial);
         txtOrderDate = findViewById(R.id.txtOrderDate);
@@ -90,7 +92,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         ServiceOrder serviceOrder = new ServiceOrder();
         serviceOrder.setOId(creationReference.getId());
         serviceOrder.setPSerial(serial);
-        serviceOrder.setUId(userId);
+        serviceOrder.setUName(userName);
         serviceOrder.setODate(new Date());
 
         firebaseFirestore.collection("ServiceOrder").document(creationReference.getId())

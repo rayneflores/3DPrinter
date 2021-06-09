@@ -21,17 +21,17 @@
             android:layout_marginBottom="4dp"
             android:text="Order Id"
             android:textAlignment="center"
-            android:textSize="15sp"
+            android:textSize="@dimen/fontLarge"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/txtListOrderUser"
+            android:id="@+id/txtListOrderUserName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
             android:text="Usuario"
-            android:textSize="12sp"
+            android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
 
         <TextView
@@ -41,7 +41,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
             android:text="Impresora"
-            android:textSize="12sp"
+            android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
 
         <TextView
@@ -51,7 +51,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
             android:text="Serial"
-            android:textSize="12sp"
+            android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
 
         <TextView
@@ -61,7 +61,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="4dp"
             android:text="Fecha"
-            android:textSize="12sp"
+            android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
     </LinearLayout>
 

@@ -16,8 +16,8 @@ import lombok.ToString;
 @ToString
 public class ServiceOrder implements Serializable {
     private String oId;
-    private String uId;
-    private String pId;
+    private String uName;
+    private String pName;
     private String pSerial;
     private Date oDate;
 }
