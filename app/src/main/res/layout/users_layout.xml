@@ -34,7 +34,7 @@
             android:layout_marginStart="4dp"
             android:text="Username"
             android:textStyle="bold"
-            android:textSize="24sp" />
+            android:textSize="@dimen/fontLarge" />
 
         <TextView
             android:id="@+id/txtListUserEmail"
@@ -43,7 +43,7 @@
             android:layout_marginBottom="4dp"
             android:layout_marginStart="8dp"
             android:text="Email"
-            android:textSize="18sp"
+            android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
 
         <TextView
@@ -53,14 +53,15 @@
             android:layout_marginBottom="4dp"
             android:layout_marginStart="8dp"
             android:text="Phone"
-            android:textSize="18sp" />
+            android:textSize="@dimen/fontRegular" />
 
         <CheckBox
             android:id="@+id/chkListUserIsAdmin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/administrador" />
+            android:text="@string/administrador"
+            android:textSize="@dimen/fontRegular" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
