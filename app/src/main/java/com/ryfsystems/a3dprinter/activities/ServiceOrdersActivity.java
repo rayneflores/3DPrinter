@@ -88,7 +88,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                                         documentSnapshot.getString("uname"),
                                         documentSnapshot.getString("pname"),
                                         documentSnapshot.getString("pserial"),
-                                        documentSnapshot.getDate("odate")
+                                        documentSnapshot.getDate("odate"),
+                                        Math.toIntExact(documentSnapshot.getLong("ostatus"))
                                 );
                                 serviceOrderFbList.add(serviceOrder);
                             }
@@ -114,7 +115,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                                         documentSnapshot.getString("uname"),
                                         documentSnapshot.getString("pname"),
                                         documentSnapshot.getString("pserial"),
-                                        documentSnapshot.getDate("odate")
+                                        documentSnapshot.getDate("odate"),
+                                        Math.toIntExact(documentSnapshot.getLong("ostatus"))
                                 );
                                 serviceOrderFbList.add(serviceOrder);
                             }

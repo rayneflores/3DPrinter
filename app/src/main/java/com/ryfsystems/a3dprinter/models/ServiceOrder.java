@@ -20,4 +20,5 @@ public class ServiceOrder implements Serializable {
     private String pName;
     private String pSerial;
     private Date oDate;
+    private int oStatus;
 }

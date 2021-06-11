@@ -63,6 +63,52 @@
             android:text="Fecha"
             android:textSize="@dimen/fontRegular"
             android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Status: "
+            android:textStyle="bold|italic" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbStatNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Nueva"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatInProcess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="En Proceso"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Procesada"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatRejected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:text="Rechazada"
+                android:textSize="@dimen/fontMini" />
+        </RadioGroup>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

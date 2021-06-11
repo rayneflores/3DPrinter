@@ -50,7 +50,8 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderViewHo
                         serviceOrderList.get(position).getUName(),
                         serviceOrderList.get(position).getPName(),
                         serviceOrderList.get(position).getPSerial(),
-                        serviceOrderList.get(position).getODate()
+                        serviceOrderList.get(position).getODate(),
+                        serviceOrderList.get(position).getOStatus()
                 );
 
                 Bundle bundle = new Bundle();
@@ -73,6 +74,11 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderViewHo
     @Override
     public void onBindViewHolder(@NonNull ServiceOrderViewHolder viewHolder, int i) {
 
+        viewHolder.rbStatNew.setChecked(false);
+        viewHolder.rbStatInProcess.setChecked(false);
+        viewHolder.rbStatDone.setChecked(false);
+        viewHolder.rbStatRejected.setChecked(false);
+
         viewHolder.txtListOrderId.setText("Orden: " + serviceOrderList.get(i).getOId());
         SpannableString userId = new SpannableString("Usuario: " + serviceOrderList.get(i).getUName());
         userId.setSpan(new StyleSpan(Typeface.BOLD), 0, 7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -86,6 +92,22 @@ public class ServiceOrderAdapter extends RecyclerView.Adapter<ServiceOrderViewHo
         SpannableString orderDate = new SpannableString("Fecha: " + serviceOrderList.get(i).getODate().toString());
         orderDate.setSpan(new StyleSpan(Typeface.BOLD), 0, 5, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.txtListOrderDate.setText(orderDate);
+
+        switch (serviceOrderList.get(i).getOStatus()) {
+            case 1:
+                viewHolder.rbStatNew.setChecked(true);
+                break;
+            case 2:
+                viewHolder.rbStatInProcess.setChecked(true);
+                break;
+            case 3:
+                viewHolder.rbStatDone.setChecked(true);
+                break;
+            case 4:
+                viewHolder.rbStatRejected.setChecked(true);
+                break;
+        }
+
     }
 
     @Override

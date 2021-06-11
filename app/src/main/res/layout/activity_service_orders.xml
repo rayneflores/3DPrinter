@@ -22,7 +22,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/btnAddOrder"
         android:layout_below="@+id/tvOrdersListTitle"
-        android:layout_margin="16dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="16dp"
         android:orientation="horizontal">
 
         <androidx.recyclerview.widget.RecyclerView

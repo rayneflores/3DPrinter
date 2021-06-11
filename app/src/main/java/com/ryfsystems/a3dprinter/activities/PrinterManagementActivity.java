@@ -126,7 +126,7 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
         documentReference.set(printer);
 
         Toast.makeText(getApplicationContext(), "Impresora Actualizada Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        startActivity(new Intent(getApplicationContext(), PrintersActivity.class));
         finish();
     }
 }

@@ -29,8 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -75,23 +75,55 @@
                 android:id="@+id/txtOrderDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
                 android:background="@color/white"
                 android:enabled="false"
                 android:hint="Fecha"
                 android:inputType="text"
                 android:textSize="@dimen/fontLarge" />
-
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </ScrollView>
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Status: "
+            android:textSize="@dimen/fontLarge" />
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbStatNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nueva"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatInProcess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="En Proceso"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatDone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Procesada"
+                android:textSize="@dimen/fontMini" />
+
+            <RadioButton
+                android:id="@+id/rbStatRejected"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rechazada"
+                android:textSize="@dimen/fontMini" />
+        </RadioGroup>
 
         <Button
             android:id="@+id/btnRegisterOrder"

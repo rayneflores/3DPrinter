@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,6 +35,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     public ArrayAdapter<String> printersAdapter;
 
     TextView txtOrderId, txtOrderPrinterSerial, txtOrderDate, lblServiceOrderManagementTitle;
+    public RadioButton rbStatNew, rbStatInProcess, rbStatDone, rbStatRejected;
 
     FirebaseFirestore firebaseFirestore;
 
@@ -61,6 +63,11 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         txtOrderPrinterSerial = findViewById(R.id.txtOrderPrinterSerial);
         txtOrderDate = findViewById(R.id.txtOrderDate);
         txtOrderDate.setText(new Date().toString());
+
+        rbStatNew = findViewById(R.id.rbStatNew);
+        rbStatInProcess = findViewById(R.id.rbStatInProcess);
+        rbStatDone = findViewById(R.id.rbStatDone);
+        rbStatRejected = findViewById(R.id.rbStatRejected);
 
         lblServiceOrderManagementTitle = findViewById(R.id.lblServiceOrderManagementTitle);
 
@@ -95,6 +102,21 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
                             txtOrderId.setText(serviceOrderReceived.getOId());
                             txtOrderPrinterSerial.setText(serviceOrderReceived.getPSerial());
                             txtOrderDate.setText(serviceOrderReceived.getODate().toString());
+
+                            switch (serviceOrderReceived.getOStatus()) {
+                                case 1:
+                                    rbStatNew.setChecked(true);
+                                    break;
+                                case 2:
+                                    rbStatInProcess.setChecked(true);
+                                    break;
+                                case 3:
+                                    rbStatDone.setChecked(true);
+                                    break;
+                                case 4:
+                                    rbStatRejected.setChecked(true);
+                                    break;
+                            }
 
                             int pos = printersAdapter.getPosition(serviceOrderReceived.getPName());
 
@@ -139,13 +161,28 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     }
 
     private void updateOrder(String id, String serial) {
-        ServiceOrder serviceOrder = new ServiceOrder(id, userName, printerName, serial, new Date());
+
+        ServiceOrder serviceOrder = new ServiceOrder();
+        serviceOrder.setOId(id);
+        serviceOrder.setUName(userName);
+        serviceOrder.setPName(printerName);
+        serviceOrder.setPSerial(serial);
+        serviceOrder.setODate(new Date());
+        if (rbStatNew.isChecked()) {
+            serviceOrder.setOStatus(1);
+        } else if (rbStatInProcess.isChecked()) {
+            serviceOrder.setOStatus(2);
+        } else if (rbStatDone.isChecked()) {
+            serviceOrder.setOStatus(3);
+        } else {
+            serviceOrder.setOStatus(4);
+        }
 
         DocumentReference documentReference = firebaseFirestore.collection("ServiceOrder").document(serviceOrder.getOId());
         documentReference.set(serviceOrder);
 
         Toast.makeText(getApplicationContext(), "Orden Actualizada Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        startActivity(new Intent(getApplicationContext(), ServiceOrdersActivity.class));
         finish();
     }
 
@@ -160,6 +197,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         serviceOrder.setPName(printerName);
         serviceOrder.setUName(userName);
         serviceOrder.setODate(new Date());
+        serviceOrder.setOStatus(1);
 
         firebaseFirestore.collection("ServiceOrder").document(creationReference.getId())
                 .set(serviceOrder)

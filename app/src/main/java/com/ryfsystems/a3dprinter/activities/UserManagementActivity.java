@@ -131,7 +131,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                     documentReference.set(user);
 
                                     Toast.makeText(getApplicationContext(), "Usuario Registrado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-                                    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                                    Intent i = new Intent(getApplicationContext(), UsersActivity.class);
                                     startActivity(i);
                                     finish();
                                 })
@@ -169,7 +169,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         documentReference.set(user);
 
         Toast.makeText(getApplicationContext(), "Usuario Actualizado Satisfactoriamente", Toast.LENGTH_SHORT).show();
-        Intent i = new Intent(getApplicationContext(), MainActivity.class);
+        Intent i = new Intent(getApplicationContext(), UsersActivity.class);
         startActivity(i);
         finish();
     }
