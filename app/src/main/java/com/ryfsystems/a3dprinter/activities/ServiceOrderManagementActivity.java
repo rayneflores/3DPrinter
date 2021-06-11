@@ -69,6 +69,10 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         rbStatDone = findViewById(R.id.rbStatDone);
         rbStatRejected = findViewById(R.id.rbStatRejected);
 
+        rbStatNew.setChecked(true);
+
+        setRbState(false);
+
         lblServiceOrderManagementTitle = findViewById(R.id.lblServiceOrderManagementTitle);
 
         btnRegisterOrder = findViewById(R.id.btnRegisterOrder);
@@ -102,6 +106,8 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
                             txtOrderId.setText(serviceOrderReceived.getOId());
                             txtOrderPrinterSerial.setText(serviceOrderReceived.getPSerial());
                             txtOrderDate.setText(serviceOrderReceived.getODate().toString());
+
+                            setRbState(true);
 
                             switch (serviceOrderReceived.getOStatus()) {
                                 case 1:
@@ -137,6 +143,13 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void setRbState(boolean state) {
+        rbStatNew.setEnabled(state);
+        rbStatInProcess.setEnabled(state);
+        rbStatDone.setEnabled(state);
+        rbStatRejected.setEnabled(state);
     }
 
     private void initializeFirebase() {

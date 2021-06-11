@@ -104,6 +104,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
         } else {
             firebaseFirestore.collection("ServiceOrder")
                     .whereEqualTo("uname", userName)
+                    .whereLessThanOrEqualTo("ostatus", 3)
+                    .orderBy("ostatus")
                     .orderBy("odate")
                     .get()
                     .addOnCompleteListener(task -> {

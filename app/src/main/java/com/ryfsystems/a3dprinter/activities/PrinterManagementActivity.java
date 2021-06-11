@@ -69,7 +69,6 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
         if (allFilled()) {
             if (received != null) {
                 updatePrinter(
-                        printerId,
                         txtPrinterName.getText().toString(),
                         txtPrinterBrand.getText().toString(),
                         txtPrinterModel.getText().toString(),
@@ -118,9 +117,14 @@ public class PrinterManagementActivity extends AppCompatActivity implements View
                         !txtPrinterUrlPhoto.getText().toString().trim().equalsIgnoreCase("");
     }
 
-    private void updatePrinter(String id, String name, String brand, String model, String image) {
+    private void updatePrinter(String name, String brand, String model, String image) {
 
-        Printer printer = new Printer(id, name, brand, model, image);
+        Printer printer = new Printer();
+        printer.setPId(printerId);
+        printer.setPName(name);
+        printer.setPBrand(brand);
+        printer.setPModel(model);
+        printer.setPImage(image);
 
         DocumentReference documentReference = firebaseFirestore.collection("Printer").document(printer.getPId());
         documentReference.set(printer);
