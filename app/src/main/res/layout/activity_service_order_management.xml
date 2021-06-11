@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".activities.ServiceOrderManagementActivity">
 
@@ -35,7 +36,9 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white">
+            android:background="@color/white"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true">
 
             <EditText
                 android:id="@+id/txtOrderPrinterSerial"
@@ -44,9 +47,24 @@
                 android:layout_marginTop="16dp"
                 android:background="@color/white"
                 android:hint="Serial"
+                android:importantForAutofill="noExcludeDescendants"
                 android:inputType="text"
                 android:textSize="@dimen/fontLarge" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="16dp"
+            android:text="Impresora:"
+            android:textSize="@dimen/fontLarge" />
+
+        <Spinner
+            android:id="@+id/spPrinterList"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -63,6 +81,16 @@
                 android:hint="Fecha"
                 android:inputType="text"
                 android:textSize="@dimen/fontLarge" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </ScrollView>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button

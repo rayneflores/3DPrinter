@@ -67,6 +67,11 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
 
     }
 
+    private void initializeFirebase() {
+        FirebaseApp.initializeApp(this);
+        firebaseFirestore = FirebaseFirestore.getInstance();
+    }
+
     private void listFbServiceOrders(Boolean isAdmin) {
         progressDialog.show();
 
@@ -97,8 +102,8 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                     });
         } else {
             firebaseFirestore.collection("ServiceOrder")
+                    .whereEqualTo("uname", userName)
                     .orderBy("odate")
-                    .whereEqualTo("uName", userName)
                     .get()
                     .addOnCompleteListener(task -> {
                         progressDialog.dismiss();
@@ -122,11 +127,6 @@ public class ServiceOrdersActivity extends AppCompatActivity implements View.OnC
                         Toast.makeText(ServiceOrdersActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
         }
-    }
-
-    private void initializeFirebase() {
-        FirebaseApp.initializeApp(this);
-        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override

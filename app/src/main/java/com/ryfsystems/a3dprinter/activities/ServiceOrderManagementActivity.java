@@ -5,7 +5,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,17 +16,22 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.ryfsystems.a3dprinter.R;
 import com.ryfsystems.a3dprinter.models.ServiceOrder;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class ServiceOrderManagementActivity extends AppCompatActivity {
 
     Bundle received;
     Button btnRegisterOrder;
+    public ArrayAdapter<String> printersAdapter;
 
     TextView txtOrderId, txtOrderPrinterSerial, txtOrderDate, lblServiceOrderManagementTitle;
 
@@ -33,6 +41,9 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
 
     String userId;
     String userName;
+    public List<String> printersList;
+    Spinner spPrinterList;
+    String printerName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +54,8 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
 
         userId = sh.getString("userId", "");
         userName = sh.getString("userName", "");
+
+        spPrinterList = findViewById(R.id.spPrinterList);
 
         txtOrderId = findViewById(R.id.txtOrderId);
         txtOrderPrinterSerial = findViewById(R.id.txtOrderPrinterSerial);
@@ -57,15 +70,51 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
 
         received = getIntent().getExtras();
 
-        if (received != null) {
-            lblServiceOrderManagementTitle.setText(R.string.actualizar_orden);
-            btnRegisterOrder.setText(R.string.actualizar);
+        CollectionReference printers = firebaseFirestore.collection("Printer");
+        printersList = new ArrayList<>();
+        printersAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, printersList);
+        printersAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spPrinterList.setAdapter(printersAdapter);
+        printers.get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (QueryDocumentSnapshot snapshot : task.getResult()) {
+                            String printer = snapshot.getString("pname");
+                            printersList.add(printer);
+                        }
+                        printersAdapter.notifyDataSetChanged();
 
-            serviceOrderReceived = (ServiceOrder) received.getSerializable("serviceOrder");
+                        if (received != null) {
 
-            txtOrderId.setText(serviceOrderReceived.getOId());
-            txtOrderPrinterSerial.setText(serviceOrderReceived.getPSerial());
-        }
+                            lblServiceOrderManagementTitle.setText(R.string.actualizar_orden);
+                            btnRegisterOrder.setText(R.string.actualizar);
+
+                            serviceOrderReceived = (ServiceOrder) received.getSerializable("serviceOrder");
+
+                            userName = serviceOrderReceived.getUName();
+                            txtOrderId.setText(serviceOrderReceived.getOId());
+                            txtOrderPrinterSerial.setText(serviceOrderReceived.getPSerial());
+                            txtOrderDate.setText(serviceOrderReceived.getODate().toString());
+
+                            int pos = printersAdapter.getPosition(serviceOrderReceived.getPName());
+
+                            spPrinterList.setSelection(pos);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(ServiceOrderManagementActivity.this, "Error al Cargar las Impresoras. Additional Data: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+
+        spPrinterList.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                printerName = String.valueOf(parent.getItemAtPosition(position));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     private void initializeFirebase() {
@@ -77,15 +126,27 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     public void onClick(View v) {
         if (allFilled()) {
             if (received != null) {
+                updateOrder(
+                        txtOrderId.getText().toString(),
+                        txtOrderPrinterSerial.getText().toString());
 
             } else {
-                createOrder(
-                        txtOrderPrinterSerial.getText().toString()
-                );
+                createOrder(txtOrderPrinterSerial.getText().toString());
             }
         } else {
             Toast.makeText(getApplicationContext(), "Debe llenar todos los Campos", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void updateOrder(String id, String serial) {
+        ServiceOrder serviceOrder = new ServiceOrder(id, userName, printerName, serial, new Date());
+
+        DocumentReference documentReference = firebaseFirestore.collection("ServiceOrder").document(serviceOrder.getOId());
+        documentReference.set(serviceOrder);
+
+        Toast.makeText(getApplicationContext(), "Orden Actualizada Satisfactoriamente", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+        finish();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -96,6 +157,7 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
         ServiceOrder serviceOrder = new ServiceOrder();
         serviceOrder.setOId(creationReference.getId());
         serviceOrder.setPSerial(serial);
+        serviceOrder.setPName(printerName);
         serviceOrder.setUName(userName);
         serviceOrder.setODate(new Date());
 
@@ -110,8 +172,6 @@ public class ServiceOrderManagementActivity extends AppCompatActivity {
     }
 
     private boolean allFilled() {
-        return
-                !txtOrderDate.getText().toString().trim().equalsIgnoreCase("") &&
-                        !txtOrderPrinterSerial.getText().toString().trim().equalsIgnoreCase("");
+        return !txtOrderPrinterSerial.getText().toString().trim().equalsIgnoreCase("");
     }
 }

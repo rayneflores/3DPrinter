@@ -18,14 +18,12 @@ public class Printer implements Serializable {
     private String pModel;
     private String pImage;
 
+    public Printer(String pName) {
+        this.pName = pName;
+    }
+
     @Override
     public String toString() {
-        return "Printer{" +
-                "pId=" + pId +
-                ", pName='" + pName + '\'' +
-                ", pBrand='" + pBrand + '\'' +
-                ", pModel='" + pModel + '\'' +
-                ", pImage='" + pImage + '\'' +
-                '}';
+        return pName;
     }
 }
