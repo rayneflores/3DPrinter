@@ -76,7 +76,8 @@ public class UsersActivity extends AppCompatActivity implements View.OnClickList
                                 documentSnapshot.getString("upassword"),
                                 documentSnapshot.getString("uemail"),
                                 documentSnapshot.getString("uphone"),
-                                documentSnapshot.getLong("uadmin")
+                                documentSnapshot.getLong("uadmin"),
+                                documentSnapshot.getLong("uactive")
                         );
                         userFbList.add(user);
                     }

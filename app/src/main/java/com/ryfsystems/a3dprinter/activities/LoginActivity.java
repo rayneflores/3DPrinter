@@ -33,6 +33,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     ProgressDialog progressDialog;
 
+    Long active;
+
     Intent i;
 
     @Override
@@ -90,7 +92,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void chekUserPassword(String email, String password) {
-
         try {
             encryptedPassword = PasswordUtils.encrypt(password, PasswordUtils.SALT);
         } catch (Exception e) {
@@ -108,16 +109,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
 
+                                active = (Long) documentSnapshot.get("uactive");
+
                                 editor.putInt("admin", Math.toIntExact((long) documentSnapshot.get("uadmin")));
                                 editor.putString("userName", documentSnapshot.getString("uname"));
                                 editor.putString("userId", documentSnapshot.getString("uid"));
                                 editor.apply();
 
-                                i = new Intent(getApplicationContext(), MainActivity.class);
-
-                                progressDialog.dismiss();
-                                startActivity(i);
-                                finish();
+                                if (active == 1L) {
+                                    i = new Intent(getApplicationContext(), MainActivity.class);
+                                    progressDialog.dismiss();
+                                    startActivity(i);
+                                    finish();
+                                } else {
+                                    FirebaseAuth.getInstance().signOut();
+                                    progressDialog.dismiss();
+                                    Toast.makeText(LoginActivity.this, "Usuario Inactivo, Contacte un Administrador", Toast.LENGTH_LONG).show();
+                                }
                             })
                             .addOnFailureListener(e -> {
                                 progressDialog.dismiss();

@@ -39,4 +39,6 @@
     <string name="nueva_orden">Nueva Orden</string>
     <string name="actualizar_orden">Actualizar Orden</string>
     <string name="registrar_orden">Registrar Orden</string>
+    <string name="activo">Activo?</string>
+    <string name="cuenta_creada_outside_done">Cuenta de Usuario Creada. Comuniquese con un Admininstrador para su activacion</string>
 </resources>

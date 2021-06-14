@@ -12,7 +12,7 @@ import com.ryfsystems.a3dprinter.R;
 public class UserViewHolder extends RecyclerView.ViewHolder {
 
     public TextView txtListUserId, txtListUserName, txtListUserPassword, txtListUserEmail, txtListUserPhone, txtListUserRole;
-    public CheckBox chkListUserIsAdmin;
+    public CheckBox chkListUserIsAdmin, chkListUserIsActive;
 
     View mView;
     private UserViewHolder.ClickListener mClickListener;
@@ -35,6 +35,7 @@ public class UserViewHolder extends RecyclerView.ViewHolder {
         txtListUserEmail = itemView.findViewById(R.id.txtListUserEmail);
         txtListUserPhone = itemView.findViewById(R.id.txtListUserPhone);
         chkListUserIsAdmin = itemView.findViewById(R.id.chkListUserIsAdmin);
+        chkListUserIsActive = itemView.findViewById(R.id.chkListUserIsActive);
     }
 
     public void setOnClickListener(UserViewHolder.ClickListener clickListener) {

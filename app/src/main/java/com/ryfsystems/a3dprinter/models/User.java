@@ -18,6 +18,7 @@ public class User implements Serializable {
     private String uEmail;
     private String uPhone;
     private Long uAdmin;
+    private Long uActive;
 
     @Override
     public String toString() {
@@ -28,6 +29,7 @@ public class User implements Serializable {
                 ", uEmail='" + uEmail + '\'' +
                 ", uPhone='" + uPhone + '\'' +
                 ", uAdmin=" + uAdmin +
+                ", uActive=" + uActive +
                 '}';
     }
 }

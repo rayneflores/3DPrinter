@@ -65,11 +65,12 @@ public class RegisterUserActivity extends AppCompatActivity implements View.OnCl
                                         user.setUEmail(txtRegisterUserEmail.getText().toString());
                                         user.setUPhone(txtRegisterUserPhone.getText().toString());
                                         user.setUAdmin(0L);
+                                        user.setUActive(0L);
 
                                         DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
                                         documentReference.set(user);
                                         FirebaseAuth.getInstance().signOut();
-                                        Toast.makeText(getApplicationContext(), "Cuenta de Usuario Creada", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getApplicationContext(), R.string.cuenta_creada_outside_done, Toast.LENGTH_LONG).show();
                                         startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                                         finish();
                                     })

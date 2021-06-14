@@ -52,7 +52,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
                         userList.get(position).getUPassword(),
                         userList.get(position).getUEmail(),
                         userList.get(position).getUPhone(),
-                        userList.get(position).getUAdmin()
+                        userList.get(position).getUAdmin(),
+                        userList.get(position).getUActive()
                 );
 
                 Bundle bundle = new Bundle();
@@ -85,6 +86,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserViewHolder> {
         phone.setSpan(new StyleSpan(Typeface.BOLD), 0, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         viewHolder.txtListUserPhone.setText(phone);
         viewHolder.chkListUserIsAdmin.setChecked(userList.get(i).getUAdmin() == 1L);
+        viewHolder.chkListUserIsActive.setChecked(userList.get(i).getUActive() == 1L);
     }
 
     @Override

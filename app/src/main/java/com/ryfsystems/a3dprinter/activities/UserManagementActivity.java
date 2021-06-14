@@ -27,13 +27,13 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
     EditText txtUserName, txtUserPassword, txtUserPasswordConfirm, txtUserEmail, txtUserPhone;
     TextView lblTitle;
 
-    Boolean isAdmin;
+    Boolean isAdmin, isActive;
     String userId = null;
 
     String encryptedPassword;
     String decryptedPassword;
 
-    CheckBox chkAdmin;
+    CheckBox chkAdmin, chkActive;
 
     FirebaseFirestore firebaseFirestore;
     FirebaseAuth firebaseAuth;
@@ -53,6 +53,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         lblTitle = findViewById(R.id.lblUserManagementTitle);
         btnRegistrar = findViewById(R.id.btnUserRegister);
         chkAdmin = findViewById(R.id.chkAdmin);
+        chkActive = findViewById(R.id.chkActive);
 
         chkAdmin.setOnCheckedChangeListener((buttonView, isChecked) -> chkAdmin.setChecked(isChecked));
 
@@ -68,6 +69,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
             userReceived = (User) received.getSerializable("user");
 
             isAdmin = userReceived.getUAdmin() == 1;
+            isActive = userReceived.getUActive() == 1;
 
 
             try {
@@ -83,6 +85,7 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
             txtUserEmail.setText(userReceived.getUEmail());
             txtUserPhone.setText(userReceived.getUPhone());
             chkAdmin.setChecked(isAdmin);
+            chkActive.setChecked(isActive);
         }
     }
 
@@ -105,7 +108,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                 encryptedPassword.trim(),
                                 txtUserEmail.getText().toString(),
                                 txtUserPhone.getText().toString(),
-                                chkAdmin.isChecked() ? 1L : 0L
+                                chkAdmin.isChecked() ? 1L : 0L,
+                                chkActive.isChecked() ? 1L : 0L
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -122,11 +126,8 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
                                     user.setUPassword(encryptedPassword.trim());
                                     user.setUEmail(txtUserEmail.getText().toString());
                                     user.setUPhone(txtUserPhone.getText().toString());
-                                    if (chkAdmin.isChecked()) {
-                                        user.setUAdmin(1L);
-                                    } else {
-                                        user.setUAdmin(0L);
-                                    }
+                                    user.setUAdmin(chkAdmin.isChecked() ? 1L : 0L);
+                                    user.setUActive(chkActive.isChecked() ? 1L : 0L);
                                     DocumentReference documentReference = firebaseFirestore.collection("User").document(firebaseUser.getUid());
                                     documentReference.set(user);
 
@@ -161,9 +162,9 @@ public class UserManagementActivity extends AppCompatActivity implements View.On
         return txtUserPassword.getText().toString().equals(txtUserPasswordConfirm.getText().toString());
     }
 
-    private void updateUser(String id, String name, String password, String email, String phone, Long admin) {
+    private void updateUser(String id, String name, String password, String email, String phone, Long admin, Long active) {
 
-        User user = new User(id, name, password, email, phone, admin);
+        User user = new User(id, name, password, email, phone, admin, active);
 
         DocumentReference documentReference = firebaseFirestore.collection("User").document(user.getUId());
         documentReference.set(user);
