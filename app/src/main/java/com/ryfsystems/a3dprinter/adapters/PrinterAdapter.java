@@ -77,7 +77,7 @@ public class PrinterAdapter extends RecyclerView.Adapter<PrinterViewHolder> {
                 .load(printerList.get(i).getPImage())
                 .placeholder(R.drawable.ic_launcher_foreground)
                 .centerInside()
-                .error(R.drawable.ic_launcher_foreground)
+                .error(R.drawable.im_not_av)
                 .into(viewHolder.ivPrinterImage);
     }
 
